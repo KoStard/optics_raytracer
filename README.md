@@ -33,7 +33,6 @@ Create a config.json file:
     "camera": {
         "center": [x, y, z],          // Camera position in 3D space
         "focal_distance": 1.0,        // Distance from camera to viewport
-        "viewport_size": [w, h],      // Physical size of viewport in world units
         "viewport_width": 2.0,        // Width of viewport in world units
         "image_size": [w, h],         // Output image resolution in pixels
         "u_vector": [x, y, z],        // Right direction vector (typically [1,0,0])
@@ -76,7 +75,6 @@ Create a config.json file:
 #### Camera Settings
 - **center**: The 3D position of the camera in world coordinates (x,y,z)
 - **focal_distance**: Distance from camera to the viewport plane
-- **viewport_size**: Physical dimensions of the viewport in world units (width, height)
 - **viewport_width**: Alternative way to specify viewport width (height calculated automatically)
 - **image_size**: Resolution of output image in pixels (width, height)
 - **u_vector**: Right direction vector of the camera (typically [1,0,0])
@@ -162,7 +160,6 @@ config = {
     "camera": {
         "center": [0, 0, 0],
         "focal_distance": 1,
-        "viewport_size": [400, 225],
         "viewport_width": 2,
         "image_size": [400, 225],
         "u_vector": [1, 0, 0],
