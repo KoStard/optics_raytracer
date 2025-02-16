@@ -99,6 +99,8 @@ Create a config.json file:
 - **export_3d**: Whether to export 3D scene (true/false)
 - **obj_path**: Path to save 3D scene file (if export_3d is true)
 
+#### Examples
+
 Example config files are available in the `examples/` directory. Run them with:
 
 ```bash
@@ -108,6 +110,12 @@ optics-raytracer examples/telescope.json
 # Run microscope example 
 optics-raytracer examples/microscope.json
 ```
+Some ready examples to check:
+- [Simple Demo With Convex and Concave Lenses](https://3dviewer.net/index.html#model=https://raw.githubusercontent.com/KoStard/optics_raytracer/refs/heads/master/scene.obj)
+- [Simple Telescope](https://3dviewer.net/#model=https://raw.githubusercontent.com/KoStard/optics_raytracer/refs/heads/master/telescope_scene.obj)
+- [Simple Microscope](https://3dviewer.net/#model=https://raw.githubusercontent.com/KoStard/optics_raytracer/refs/heads/master/microscope_scene.obj)
+
+Notice that not all rays and hits are rendered in the OBJ to keep the file light. The rendered ones are chosen randomly.
 
 ### 2. Python Configuration
 
