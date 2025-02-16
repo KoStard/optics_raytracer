@@ -2,7 +2,6 @@
     "camera": {
         "center": [0, 0, 0],
         "focal_distance": 1,
-        "viewport_size": [400, 225],
         "viewport_width": 2,
         "image_size": [400, 225],
         "u_vector": [1, 0, 0],

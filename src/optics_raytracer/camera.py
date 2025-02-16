@@ -1,11 +1,11 @@
 from .pixelated_viewport import PixelatedViewport
 from .ray import Ray
-from .size import IntegerSize
+from .size import FloatSize, IntegerSize
 from .vec3 import Point3, Vec3
 
 
 class Camera:
-    def __init__(self, camera_center: Point3, focal_distance: float, viewport_size: IntegerSize, image_size: IntegerSize, viewport_u_vector: Vec3, viewport_normal: Vec3):
+    def __init__(self, camera_center: Point3, focal_distance: float, viewport_size: FloatSize, image_size: IntegerSize, viewport_u_vector: Vec3, viewport_normal: Vec3):
         # viewport_normal is the continuation of the camera to viewport center vector
         viewport_normal = viewport_normal.unit_vector
         viewport_center = camera_center + focal_distance * viewport_normal

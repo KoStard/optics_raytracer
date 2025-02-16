@@ -17,7 +17,7 @@ def parse_config(config: Dict[str, Any]) -> OpticsRayTracingEngine:
     camera = Camera(
         Point3(*cam_cfg['center']),
         cam_cfg['focal_distance'],
-        IntegerSize(*cam_cfg['viewport_size']).float_scale_to_width(cam_cfg['viewport_width']),
+        IntegerSize(*cam_cfg['image_size']).float_scale_to_width(cam_cfg['viewport_width']),
         IntegerSize(*cam_cfg['image_size']),
         Vec3(*cam_cfg['u_vector']),
         Vec3(*cam_cfg['viewport_normal'])
