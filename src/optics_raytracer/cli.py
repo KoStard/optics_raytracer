@@ -39,7 +39,7 @@ def parse_config(config: Dict[str, Any]) -> OpticsRayTracingEngine:
                 raise FileNotFoundError(f"Image not found: {image_path}")
             image = Image.open(image_path)
             hittables.append(InsertedImage(
-                Point3(*obj['position']),
+                Point3(*obj['left_top']),
                 obj['width'],
                 IntegerSize(image.width, image.height).float_scale_to_width(obj['width']).height,
                 Vec3(*obj['u_vector']),
