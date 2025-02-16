@@ -31,42 +31,84 @@ Create a config.json file:
 ```json
 {
     "camera": {
-        "center": [0, 0, 0],
-        "focal_distance": 1,
-        "viewport_size": [400, 225],
-        "viewport_width": 2,
-        "image_size": [400, 225],
-        "u_vector": [1, 0, 0],
-        "viewport_normal": [0, 0, -1]
+        "center": [x, y, z],          // Camera position in 3D space
+        "focal_distance": 1.0,        // Distance from camera to viewport
+        "viewport_size": [w, h],      // Physical size of viewport in world units
+        "viewport_width": 2.0,        // Width of viewport in world units
+        "image_size": [w, h],         // Output image resolution in pixels
+        "u_vector": [x, y, z],        // Right direction vector (typically [1,0,0])
+        "viewport_normal": [x, y, z]  // Direction camera is pointing (away from camera)
     },
     "objects": [
         {
-            "type": "lens",
-            "center": [0, 0, -2],
-            "radius": 1,
-            "normal": [0, 0, -1],
-            "focal_distance": -1
+            "type": "lens",           // Type of object
+            "center": [x, y, z],      // Lens center position
+            "radius": 1.0,            // Lens radius
+            "normal": [x, y, z],      // Lens orientation (normal vector)
+            "focal_distance": -1.0    // Focal length (positive for convex, negative for concave)
         },
         {
-            "type": "image",
-            "position": [-2, 1, -4],
-            "width": 4,
-            "u_vector": [1, 0, 0],
-            "normal": [0, 0, -1],
-            "image_path": "image.png"
+            "type": "lens",           // Second lens
+            "center": [x, y, z],      
+            "radius": 1.0,            
+            "normal": [x, y, z],      
+            "focal_distance": 1.0     
+        },
+        {
+            "type": "image",          // Type of object
+            "left_top": [x, y, z],    // Top-left corner position of image
+            "width": 4.0,             // Physical width of image in world units
+            "u_vector": [x, y, z],    // Right direction vector of image plane
+            "normal": [x, y, z],      // Image plane orientation (normal vector)
+            "image_path": "image.png" // Path to source image file
         }
     ],
     "output": {
-        "image_path": "output.png",
-        "export_3d": true,
-        "obj_path": "scene.obj"
+        "image_path": "output.png",   // Path to save rendered image
+        "export_3d": true,            // Whether to export 3D scene
+        "obj_path": "scene.obj"       // Path to save 3D scene (if export_3d is true)
     }
 }
 ```
 
-Run the raytracer:
+### Configuration Attributes Explained
+
+#### Camera Settings
+- **center**: The 3D position of the camera in world coordinates (x,y,z)
+- **focal_distance**: Distance from camera to the viewport plane
+- **viewport_size**: Physical dimensions of the viewport in world units (width, height)
+- **viewport_width**: Alternative way to specify viewport width (height calculated automatically)
+- **image_size**: Resolution of output image in pixels (width, height)
+- **u_vector**: Right direction vector of the camera (typically [1,0,0])
+- **viewport_normal**: Direction the camera is pointing (normal vector away from camera)
+
+#### Object Settings
+- **type**: Type of object ("lens" or "image")
+- For lenses:
+  - **center**: 3D position of lens center
+  - **radius**: Physical radius of lens
+  - **normal**: Orientation of lens (normal vector)
+  - **focal_distance**: Focal length (positive for convex, negative for concave lenses)
+- For images:
+  - **position**: Top-left corner position of image in 3D space
+  - **width**: Physical width of image in world units
+  - **u_vector**: Right direction vector of image plane
+  - **normal**: Orientation of image plane (normal vector)
+  - **image_path**: Path to source image file
+
+#### Output Settings
+- **image_path**: Path to save rendered output image
+- **export_3d**: Whether to export 3D scene (true/false)
+- **obj_path**: Path to save 3D scene file (if export_3d is true)
+
+Example config files are available in the `examples/` directory. Run them with:
+
 ```bash
-optics-raytracer config.json
+# Run telescope example
+optics-raytracer examples/telescope.json
+
+# Run microscope example 
+optics-raytracer examples/microscope.json
 ```
 
 ### 2. Python Configuration
