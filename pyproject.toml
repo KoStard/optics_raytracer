@@ -1,7 +1,7 @@
 [project]
 name = "optics-raytracer"
 version = "0.1.0"
-description = "Add your description here"
+description = "A 3D optics raytracer for simulating thin lenses and image projection, with OBJ export capabilities"
 readme = "README.md"
 authors = [
     { name = "KoStard", email = "ruben.kostard@gmail.com" }
