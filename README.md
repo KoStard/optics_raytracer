@@ -10,6 +10,9 @@ A 3D optics raytracer for simulating thin lenses and image projection, with OBJ 
 - Multiple configuration methods (CLI, Python, JSON)
 - Ray visualization in 3D space
 
+![Optics Simulation](https://github.com/user-attachments/assets/ea337d37-45da-4bc2-a82c-38d84c8d583a)
+
+
 ## Installation
 
 Install using pip or uv:
