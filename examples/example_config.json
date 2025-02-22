@@ -28,11 +28,11 @@
             "width": 4,
             "u_vector": [1, 0, 0],
             "normal": [0, 0, -1],
-            "image_path": "image.png"
+            "image_path": "examples/image.png"
         }
     ],
     "output": {
-        "image_path": "output.png",
+        "image_path": "examples/output.png",
         "export_3d": true,
         "obj_path": "scene.obj"
     }

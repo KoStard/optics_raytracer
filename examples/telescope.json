@@ -28,11 +28,11 @@
             "width": 1,
             "u_vector": [1, 0, 0],
             "normal": [0, 0, -1],
-            "image_path": "image.png"
+            "image_path": "examples/image.png"
         }
     ],
     "output": {
-        "image_path": "telescope_view.png",
+        "image_path": "examples/telescope_view.png",
         "export_3d": true,
         "obj_path": "telescope_scene.obj"
     }

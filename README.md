@@ -62,7 +62,7 @@ Create a config.json file:
             "width": 4.0,             // Physical width of image in world units
             "u_vector": [x, y, z],    // Right direction vector of image plane
             "normal": [x, y, z],      // Image plane orientation (normal vector)
-            "image_path": "image.png" // Path to source image file
+            "image_path": "examples/image.png" // Path to source image file
         }
     ],
     "output": {
@@ -140,7 +140,7 @@ camera = Camera(
 )
 
 # Load image and create objects
-image = Image.open("image.png")
+image = Image.open("examples/image.png")
 inserted_image = InsertedImage(
     Point3(-2, 1, -4),
     4,
@@ -190,7 +190,7 @@ config = {
             "width": 4,
             "u_vector": [1, 0, 0],
             "normal": [0, 0, -1],
-            "image_path": "image.png"
+            "image_path": "examples/image.png"
         }
     ],
     "output": {

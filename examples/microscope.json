@@ -28,11 +28,11 @@
             "width": 0.05,
             "u_vector": [1, 0, 0],
             "normal": [0, 0, -1],
-            "image_path": "image.png"
+            "image_path": "examples/image.png"
         }
     ],
     "output": {
-        "image_path": "microscope_view.png",
+        "image_path": "examples/microscope_view.png",
         "export_3d": true,
         "obj_path": "microscope_scene.obj"
     }
