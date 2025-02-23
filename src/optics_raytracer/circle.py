@@ -8,6 +8,24 @@ circle_dtype = np.dtype([
     ('radius', np.float64),         # Radius of the circle
 ])
 
+def build_circle(center: np.ndarray, radius: float, normal: np.ndarray):
+    """
+    Create a circle numpy structured array.
+    
+    Args:
+        center: 3D center point of the circle
+        radius: Radius of the circle
+        normal: Normal vector of the circle's plane
+        
+    Returns:
+        Numpy structured array representing the circle
+    """
+    normal = normal / np.linalg.norm(normal)  # Normalize
+    return np.array(
+        (center, normal, radius),
+        dtype=circle_dtype
+    )
+
 def get_hits_mask(circle, points_array):
     """
     Check which points lie within the circle. Assumes that it's already in the plane.

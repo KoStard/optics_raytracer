@@ -11,6 +11,36 @@ pixelated_viewport_dtype = np.dtype([
     ('pixel_rows', np.int64),
 ])
 
+def build_pixelated_viewport(
+    middle_point: np.ndarray,
+    normal: np.ndarray,
+    width: float,
+    height: float,
+    u_vector: np.ndarray,
+    pixel_columns: int,
+    pixel_rows: int
+):
+    """
+    Create a pixelated viewport numpy structured array.
+    
+    Args:
+        middle_point: Center point of the viewport
+        normal: Normal vector of the viewport plane
+        width: Total width of the viewport
+        height: Total height of the viewport
+        u_vector: U vector defining the viewport's horizontal axis
+        pixel_columns: Number of pixel columns
+        pixel_rows: Number of pixel rows
+        
+    Returns:
+        Numpy structured array representing the pixelated viewport
+    """
+    normal = normal / np.linalg.norm(normal)  # Normalize
+    return np.array(
+        (middle_point, normal, width, height, u_vector, pixel_columns, pixel_rows),
+        dtype=pixelated_viewport_dtype
+    )
+
 def get_pixel_points(pixelated_viewport):
     """
     Returns height x width matrix of points, where each point is a pixel center.
