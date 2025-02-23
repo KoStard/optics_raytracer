@@ -1,5 +1,4 @@
 import numpy as np
-from .surface import surface_dtype
 from .primitives import vector_dtype
 
 rectangle_dtype = np.dtype([
