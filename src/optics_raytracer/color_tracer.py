@@ -64,11 +64,11 @@ class ColorTracer:
         colors = np.tile(self.default_color, (len(rays), 1))
         
         # Find closest hits for all objects
-        hit_ts = np.full(len(rays), np.inf)
-        object_hit_mask = np.zeros(len(rays), dtype=bool)
-        lens_hit_mask = np.zeros(len(rays), dtype=bool)
-        hit_object_indices = np.full(len(rays), -1)
-        hit_lens_indices = np.full(len(rays), -1)
+        closest_hit_ts = np.full(len(rays), np.inf)
+        any_object_hit_mask = np.zeros(len(rays), dtype=bool)
+        any_lens_hit_mask = np.zeros(len(rays), dtype=bool)
+        ray_hitting_object_indices_array = np.full(len(rays), -1)
+        ray_hitting_lens_indices_array = np.full(len(rays), -1)
         
         # Check colored objects
         for obj_index, lens in enumerate(self.colored_objects):
@@ -96,69 +96,70 @@ class ColorTracer:
                 continue
             
             # Update closest hits
-            closer_mask = obj_ts < hit_ts
+            closer_mask = obj_ts < closest_hit_ts
             update_mask = obj_mask & closer_mask
-            hit_ts[update_mask] = obj_ts[update_mask]
-            object_hit_mask[update_mask] = True
-            hit_object_indices[update_mask] = obj_index
+            closest_hit_ts[update_mask] = obj_ts[update_mask]
+            any_object_hit_mask[update_mask] = True
+            ray_hitting_object_indices_array[update_mask] = obj_index
             
         # Check lenses
         for lens_index, lens in enumerate(self.lenses):
             lens_ts = get_surface_hit_ts(rays, lens.center, lens.normal)
-            lens_hit_mask = get_surface_hit_ts_mask(lens_ts)
-            lens_hit_mask[lens_hit_mask] &= Circle.get_hits_mask(lens.array, get_ray_points_array_at_t_array(rays[lens_hit_mask], lens_ts[lens_hit_mask]))
+            current_lens_hit_mask = get_surface_hit_ts_mask(lens_ts)
+            current_lens_hit_mask[current_lens_hit_mask] &= Circle.get_hits_mask(lens.array, get_ray_points_array_at_t_array(rays[current_lens_hit_mask], lens_ts[current_lens_hit_mask]))
+            
+            any_lens_hit_mask[current_lens_hit_mask] = True
             
             # Only process rays that hit this lens first
-            first_hit_mask = lens_ts < hit_ts
-            update_mask = lens_hit_mask & first_hit_mask
+            first_hit_mask = lens_ts < closest_hit_ts
+            update_mask = any_lens_hit_mask & first_hit_mask
             
-            hit_ts[update_mask] = lens_ts[update_mask]
-            object_hit_mask[update_mask] = False
-            hit_object_indices[update_mask] = -1
-            hit_lens_indices[update_mask] = lens_index
-            lens_hit_mask[update_mask] = True
+            closest_hit_ts[update_mask] = lens_ts[update_mask]
+            any_object_hit_mask[update_mask] = False
+            ray_hitting_object_indices_array[update_mask] = -1
+            ray_hitting_lens_indices_array[update_mask] = lens_index
+            any_lens_hit_mask[update_mask] = True
         
-        if np.any(lens_hit_mask):
-            hit_points = get_ray_points_array_at_t_array(rays[lens_hit_mask], hit_ts[lens_hit_mask])
+        if np.any(any_lens_hit_mask):
+            lens_hit_points = get_ray_points_array_at_t_array(rays[any_lens_hit_mask], closest_hit_ts[any_lens_hit_mask])
             
             # Get the unique values.
             lens_indices = np.arange(len(self.lenses))
 
             # Create a dictionary of masks, where each mask shows the positions of the corresponding value.
-            masks = {val: (hit_lens_indices == val) for val in lens_indices}
+            masks_by_lens_index = {current_lens_index: (ray_hitting_lens_indices_array == current_lens_index) for current_lens_index in lens_indices}
             
-            for hit_lens_index, hit_lens_mask in masks.items():
-                # hit_lens_mask represents the mask of current lens being hit
-                if np.any(hit_lens_mask):
-                    lens = self.lenses[hit_lens_index]
-                    new_rays = lens.get_new_rays(rays[hit_lens_mask], hit_points[hit_lens_mask[lens_hit_mask]])
+            for current_lens_index, current_lens_hitting_mask in masks_by_lens_index.items():
+                if np.any(current_lens_hitting_mask):
+                    lens = self.lenses[current_lens_index]
+                    new_rays = lens.get_new_rays(rays[current_lens_hitting_mask], lens_hit_points[any_lens_hit_mask[current_lens_hitting_mask]])
                     # TODO: Optimization opportunity, collect all rays together and call get_colors once
-                    colors[hit_lens_mask] = self.get_colors(new_rays, depth=depth+1 if depth else 1)
+                    colors[current_lens_hitting_mask] = self.get_colors(new_rays, depth=depth+1 if depth else 1)
             
             # Save visualization of hit rays
-            self._save_hit_rays(rays[lens_hit_mask], hit_points, depth=depth)
+            self._save_hit_rays(rays[any_lens_hit_mask], lens_hit_points, depth=depth)
                 
         # Get colors for non-lens hits
-        if np.any(object_hit_mask):
-            hit_points = get_ray_points_array_at_t_array(rays[object_hit_mask], hit_ts[object_hit_mask])
+        if np.any(any_object_hit_mask):
+            lens_hit_points = get_ray_points_array_at_t_array(rays[any_object_hit_mask], closest_hit_ts[any_object_hit_mask])
             
             # Get the unique values.
             lens_indices = np.arange(len(self.colored_objects))
 
             # Create a dictionary of masks, where each mask shows the positions of the corresponding value.
-            masks = {val: (hit_object_indices == val) for val in lens_indices}
+            masks_by_lens_index = {val: (ray_hitting_object_indices_array == val) for val in lens_indices}
             
-            for hit_object_index, hit_object_mask in masks.items():
+            for hit_object_index, hit_object_mask in masks_by_lens_index.items():
                 if np.any(hit_object_mask):
                     # Get colors from objects
                     lens = self.colored_objects[hit_object_index]
-                    colors[hit_object_mask] = lens.get_colors(hit_points[hit_object_mask[object_hit_mask]])
+                    colors[hit_object_mask] = lens.get_colors(lens_hit_points[hit_object_mask[any_object_hit_mask]])
             
             # Save visualization of hit rays
-            self._save_hit_rays(rays[object_hit_mask], hit_points, depth=depth)
+            self._save_hit_rays(rays[any_object_hit_mask], lens_hit_points, depth=depth)
         
         # Save visualization of missed rays
-        missed_mask = ~(object_hit_mask | lens_hit_mask)
+        missed_mask = ~(any_object_hit_mask | any_lens_hit_mask)
         if np.any(missed_mask):
             self._save_missed_rays(rays[missed_mask])
                     
