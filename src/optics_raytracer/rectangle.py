@@ -1,4 +1,6 @@
 import numpy as np
+
+from optics_raytracer.colored_object import ColoredObject
 from .primitives import vector_dtype
 
 rectangle_dtype = np.dtype([
@@ -9,42 +11,117 @@ rectangle_dtype = np.dtype([
     ('u_vector', *vector_dtype),
 ])
 
-def build_rectangle(
-    middle_point: np.ndarray,
-    normal: np.ndarray,
-    width: float,
-    height: float,
-    u_vector: np.ndarray
-):
+class Rectangle:
     """
-    Create a rectangle numpy structured array.
-    
-    Args:
-        middle_point: Center point of the rectangle
-        normal: Normal vector of the rectangle's plane
-        width: Width of the rectangle
-        height: Height of the rectangle
-        u_vector: U vector defining the rectangle's horizontal axis
+    Wrapper class for rectangle_dtype numpy arrays with helper methods.
+    """
+    def __init__(self, rectangle_array: np.ndarray):
+        if rectangle_array.dtype != rectangle_dtype:
+            raise ValueError(f"Input array must have dtype {rectangle_dtype}")
+        self.array = rectangle_array
+
+    @property
+    def middle_point(self) -> np.ndarray:
+        return self.array['middle_point']
+
+    @property
+    def normal(self) -> np.ndarray:
+        return self.array['normal']
+
+    @property
+    def width(self) -> float:
+        return self.array['width']
+
+    @property
+    def height(self) -> float:
+        return self.array['height']
+
+    @property
+    def u_vector(self) -> np.ndarray:
+        return self.array['u_vector']
+
+    @staticmethod
+    def build(
+        middle_point: np.ndarray,
+        normal: np.ndarray,
+        width: float,
+        height: float,
+        u_vector: np.ndarray
+    ) -> 'Rectangle':
+        """
+        Create a new Rectangle instance.
         
-    Returns:
-        Numpy structured array representing the rectangle
+        Args:
+            middle_point: Center point of the rectangle
+            normal: Normal vector of the rectangle's plane
+            width: Width of the rectangle
+            height: Height of the rectangle
+            u_vector: U vector defining the rectangle's horizontal axis
+            
+        Returns:
+            New Rectangle instance
+        """
+        normal = normal / np.linalg.norm(normal)  # Normalize
+        return Rectangle(np.array(
+            (middle_point, normal, width, height, u_vector),
+            dtype=rectangle_dtype
+        ))
+        
+    # Make this a static method accepting the self.array as input, adjust the rest accordingly AI!
+    def get_hits_mask(self, points_array: np.ndarray) -> np.ndarray:
+        """
+        Check which points lie within the rectangle.
+        
+        Args:
+            points_array: Array of points to check (Nx3)
+            
+        Returns:
+            Boolean mask array indicating which points are inside the rectangle
+        """
+        middle_to_point_vector_array = points_array - self.middle_point
+
+        # Get u and v projections
+        u = self.u_vector[:, np.newaxis]
+        v = np.cross(self.normal, self.u_vector)[:, np.newaxis]
+        u_projection_vectors = np.matmul(np.matmul(u, u.T) / np.matmul(u.T, u), middle_to_point_vector_array.T).T
+        v_projection_vectors = np.matmul(np.matmul(v, v.T) / np.matmul(v.T, v), middle_to_point_vector_array.T).T
+
+        return np.logical_and(
+            np.linalg.norm(u_projection_vectors, axis=1) <= self.width / 2,
+            np.linalg.norm(v_projection_vectors, axis=1) <= self.height / 2
+        )
+
+
+class ColoredRectangle(ColoredObject):
     """
-    normal = normal / np.linalg.norm(normal)  # Normalize
-    return np.array(
-        (middle_point, normal, width, height, u_vector),
-        dtype=rectangle_dtype
-    )
+    A rectangle that can return colors for points that hit its surface.
+    """
+    def __init__(self, rectangle: Rectangle, color: np.ndarray):
+        """
+        Create a new ColoredRectangle.
+        
+        Args:
+            rectangle: The rectangle geometry
+            color: RGB color (3-element array) with values between 0 and 1
+        """
+        self.rectangle = rectangle
+        self.color = color
 
-def get_rectangle_hits_mask(rectangle, points_array):
-    middle_to_point_vector_array = points_array - rectangle['middle_point']
-
-    # Get u and v projections
-    u = rectangle['u_vector'][:, np.newaxis]
-    v = np.cross(rectangle['normal'], rectangle['u_vector'])[:, np.newaxis]
-    u_projection_vectors = np.matmul(np.matmul(u, u.T) / np.matmul(u.T, u), middle_to_point_vector_array.T).T
-    v_projection_vectors = np.matmul(np.matmul(v, v.T) / np.matmul(v.T, v), middle_to_point_vector_array.T).T
-
-    return np.logical_and(
-        np.linalg.norm(u_projection_vectors, axis=1) <= rectangle['width'] / 2,
-        np.linalg.norm(v_projection_vectors, axis=1) <= rectangle['height'] / 2
-    )
+    def get_colors(self, points: np.ndarray) -> np.ndarray:
+        """
+        Get colors for an array of points on its surface.
+        
+        Args:
+            points: Array of points (Nx3)
+            
+        Returns:
+            Array of colors (Nx3) in RGB format with values between 0 and 1
+            Points that don't hit the rectangle will have color [0,0,0]
+        """
+        # Create empty array of black colors
+        colors = np.zeros_like(points)
+        
+        # Set color for hit points
+        colors[:] = self.color
+        
+        return colors
