@@ -45,10 +45,10 @@ class Circle:
             New Circle instance
         """
         normal = normal / np.linalg.norm(normal)  # Normalize
-        return np.array(
+        return Circle(np.array(
             (center, normal, radius),
             dtype=circle_dtype
-        )
+        ))
 
     @staticmethod
     def get_hits_mask(circle_array: np.ndarray, points_array: np.ndarray) -> np.ndarray:
