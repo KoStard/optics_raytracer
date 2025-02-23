@@ -106,7 +106,7 @@ class ColorTracer:
         for lens_index, lens in enumerate(self.lenses):
             lens_ts = get_surface_hit_ts(rays, lens.center, lens.normal)
             lens_hit_mask = get_surface_hit_ts_mask(lens_ts)
-            lens_hit_mask &= Circle.get_hits_mask(lens.array, rays['origin'])
+            lens_hit_mask[lens_hit_mask] &= Circle.get_hits_mask(lens.array, get_ray_points_array_at_t_array(rays[lens_hit_mask], lens_ts[lens_hit_mask]))
             
             # Only process rays that hit this lens first
             first_hit_mask = lens_ts < hit_ts
