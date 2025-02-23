@@ -50,7 +50,7 @@ class ColorTracer:
         for lens in lenses:
             self.exporter.add_circle(lens.array, 50)
 
-    def get_colors(self, rays: np.ndarray) -> np.ndarray:
+    def get_colors(self, rays: np.ndarray, depth=None) -> np.ndarray:
         """
         Get colors for an array of rays by tracing them through the scene.
         
@@ -133,10 +133,10 @@ class ColorTracer:
                     lens = self.lenses[hit_lens_index]
                     new_rays = lens.get_new_rays(rays[hit_lens_mask], hit_points[hit_lens_mask[lens_hit_mask]])
                     # TODO: Optimization opportunity, collect all rays together and call get_colors once
-                    colors[hit_lens_mask] = self.get_colors(new_rays)
+                    colors[hit_lens_mask] = self.get_colors(new_rays, depth=depth+1 if depth else 1)
             
             # Save visualization of hit rays
-            self._save_hit_rays(rays[lens_hit_mask], hit_points)
+            self._save_hit_rays(rays[lens_hit_mask], hit_points, depth=depth)
                 
         # Get colors for non-lens hits
         if np.any(object_hit_mask):
@@ -155,7 +155,7 @@ class ColorTracer:
                     colors[hit_object_mask] = lens.get_colors(hit_points[hit_object_mask[object_hit_mask]])
             
             # Save visualization of hit rays
-            self._save_hit_rays(rays[object_hit_mask], hit_points)
+            self._save_hit_rays(rays[object_hit_mask], hit_points, depth=depth)
         
         # Save visualization of missed rays
         missed_mask = ~(object_hit_mask | lens_hit_mask)
@@ -164,7 +164,7 @@ class ColorTracer:
                     
         return colors
 
-    def _save_hit_rays(self, rays, points):
+    def _save_hit_rays(self, rays, points, depth=None):
         """
         Save visualization of rays that hit objects.
         
@@ -174,8 +174,11 @@ class ColorTracer:
         """
         # Save visualization of hit rays
         tracing_mask = self._get_random_tracing_mask(len(rays))
+        rays_group = "rays"
+        if depth:
+            rays_group += f"/{depth}_depth"
         for ray, point in zip(rays[tracing_mask], points[tracing_mask]):
-            self.exporter.add_line(ray['origin'], point, group="rays")
+            self.exporter.add_line(ray['origin'], point, group=rays_group)
             self.exporter.add_point(point, group="hits")
 
     def _save_missed_rays(self, rays, max_length=1000):
@@ -190,7 +193,7 @@ class ColorTracer:
         tracing_mask = self._get_random_tracing_mask(len(rays))
         for ray in rays[tracing_mask]:
             end_point = ray['origin'] + ray['direction'] * max_length
-            self.exporter.add_line(ray['origin'], end_point, group="missed-rays")
+            self.exporter.add_line(ray['origin'], end_point, group="rays/missed")
 
     def _get_random_tracing_mask(self, l):
         return np.random.rand(l) <= self.ray_sampling_rate_for_3d_export
