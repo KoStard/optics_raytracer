@@ -29,7 +29,7 @@ def build_camera(
 ):
     viewport_normal = viewport_normal / np.linalg.norm(viewport_normal)
     viewport_center = camera_center + focal_distance * viewport_normal
-    return np.array(
+    camera_array = np.array(
         (
             viewport_center,
             viewport_normal,
@@ -42,6 +42,8 @@ def build_camera(
         ),
         dtype=simple_camera_viewport_dtype,
     )
+    output_image_array = np.zeros(image_size.width * image_size.height * 3, dtype=np.uint8)
+    return camera_array, output_image_array
 
 def get_rays(simple_camera_viewport):
     pixel_points = get_pixel_points(simple_camera_viewport)

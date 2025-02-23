@@ -9,7 +9,7 @@ rectangle_dtype = np.dtype([
     ('u_vector', *vector_dtype),
 ])
 
-def get_hits_mask(rectangle, points_array):
+def get_rectangle_hits_mask(rectangle, points_array):
     middle_to_point_vector_array = points_array - rectangle['middle_point']
 
     # Get u and v projections

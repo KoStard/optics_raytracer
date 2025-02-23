@@ -27,7 +27,7 @@ def build_lens(center: np.ndarray, radius: float, normal: np.ndarray, focal_dist
         dtype=lens_dtype
     )
 
-def get_new_rays(lens, hitting_rays, hit_points):
+def get_new_rays_from_lens(lens, hitting_rays, hit_points):
     """
     Calculate new ray directions after refraction through the lens.
     
