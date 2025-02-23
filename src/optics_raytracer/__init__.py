@@ -3,6 +3,7 @@ from .ray import ray_dtype
 from .surface import surface_dtype
 from .rectangle import rectangle_dtype
 from .circle import circle_dtype
+from .lens import lens_dtype
 
 __all__ = [
     'vector_dtype',
@@ -12,4 +13,5 @@ __all__ = [
     'surface_dtype',
     'rectangle_dtype',
     'circle_dtype',
+    'lens_dtype',
 ]
