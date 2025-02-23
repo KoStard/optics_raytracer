@@ -130,17 +130,22 @@ class ColorTracer:
                 
         # Get colors for non-lens hits
         if np.any(object_hit_masks):
-            hit_indices = np.where(object_hit_masks)[0]
             hit_points = get_ray_points_array_at_t_array(rays[object_hit_masks], hit_ts[object_hit_masks])
+            
+            # Get the unique values.
+            colored_object_indices = np.arange(len(self.colored_objects))
+
+            # Create a dictionary of masks, where each mask shows the positions of the corresponding value.
+            masks = {val: (hit_object_indices == val) for val in colored_object_indices}
+            
+            for hit_object_index, hit_object_mask in masks.items():
+                if np.any(hit_object_mask):
+                    # Get colors from objects
+                    obj = self.colored_objects[hit_object_index]
+                    colors[hit_object_mask] = obj.get_colors(hit_points[hit_object_mask])
             
             # Save visualization of hit rays
             self._save_hit_rays(rays[object_hit_masks], hit_points)
-            
-            # Get colors from objects
-            for point_index, (hit_index, obj_index) in enumerate(zip(hit_indices, hit_object_indices)):
-                if obj_index is not None:
-                    obj = self.colored_objects[obj_index]
-                    colors[hit_index] = obj.get_colors(np.array([hit_points[point_index]]))[0]
         
         # Save visualization of missed rays
         missed_mask = ~(object_hit_masks | lens_hit_masks)
