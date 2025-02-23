@@ -24,4 +24,4 @@ def get_surface_hit_ts(rays, surface_point, surface_normal, t_max=100000) -> np.
     return t_array
 
 def get_surface_hit_ts_mask(hit_ts):
-    return hit_ts != np.inf
+    return np.abs(hit_ts) < np.inf

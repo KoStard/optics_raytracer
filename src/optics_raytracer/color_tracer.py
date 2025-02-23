@@ -49,7 +49,8 @@ class ColorTracer:
         
         # Find closest hits for all objects
         hit_ts = np.full(len(rays), np.inf)
-        hit_masks = np.zeros(len(rays), dtype=bool)
+        object_hit_masks = np.zeros(len(rays), dtype=bool)
+        lens_hit_masks = np.zeros(len(rays), dtype=bool)
         hit_object_indices = np.full(len(rays), -1)
         
         # Check colored objects
@@ -81,7 +82,7 @@ class ColorTracer:
             closer_mask = obj_ts < hit_ts
             update_mask = obj_mask & closer_mask
             hit_ts[update_mask] = obj_ts[update_mask]
-            hit_masks[update_mask] = True
+            object_hit_masks[update_mask] = True
             hit_object_indices[update_mask] = obj_index
             
         # Check lenses
@@ -93,10 +94,13 @@ class ColorTracer:
             # Only process rays that hit this lens first
             first_hit_mask = lens_ts < hit_ts
             process_mask = lens_mask & first_hit_mask
+            object_hit_masks[process_mask] = False
+            hit_object_indices[process_mask] = -1
             
             if np.any(process_mask):
                 # Get hit points and new rays
                 hit_points = get_ray_points_array_at_t_array(rays[process_mask], lens_ts[process_mask])
+                self._save_hit_rays(rays[process_mask], hit_points)
                 new_rays = lens.get_new_rays(rays[process_mask], hit_points)
                 
                 # Recursively trace new rays
@@ -106,17 +110,49 @@ class ColorTracer:
                 colors[process_mask] = new_colors
                 
                 # Mark these rays as processed
-                hit_masks[process_mask] = True
+                lens_hit_masks[process_mask] = True
                 
         # Get colors for non-lens hits
-        if np.any(hit_masks):
-            hit_indices = np.where(hit_masks)[0]
-            hit_points = get_ray_points_array_at_t_array(rays[hit_masks], hit_ts[hit_masks])
+        if np.any(object_hit_masks):
+            hit_indices = np.where(object_hit_masks)[0]
+            hit_points = get_ray_points_array_at_t_array(rays[object_hit_masks], hit_ts[object_hit_masks])
+            
+            # Save visualization of hit rays
+            self._save_hit_rays(rays[object_hit_masks], hit_points)
             
             # Get colors from objects
-            for i, obj_index in zip(hit_indices, hit_object_indices):
+            for point_index, (hit_index, obj_index) in enumerate(zip(hit_indices, hit_object_indices)):
                 if obj_index is not None:
                     obj = self.colored_objects[obj_index]
-                    colors[i] = obj.get_colors(np.array([hit_points[i]]))[0]
+                    colors[hit_index] = obj.get_colors(np.array([hit_points[point_index]]))[0]
+        
+        # Save visualization of missed rays
+        missed_mask = ~(object_hit_masks | lens_hit_masks)
+        if np.any(missed_mask):
+            self._save_missed_rays(rays[missed_mask])
                     
         return colors
+
+    def _save_hit_rays(self, rays, points):
+        """
+        Save visualization of rays that hit objects.
+        
+        Args:
+            rays: Array of rays that hit objects (ray_dtype)
+            points: Array of hit points (Nx3)
+        """
+        for ray, point in zip(rays, points):
+            self.exporter.add_line(ray['origin'], point, group="rays")
+            self.exporter.add_point(point, group="hits")
+
+    def _save_missed_rays(self, rays, max_length=1):
+        """
+        Save visualization of rays that missed all objects.
+        
+        Args:
+            rays: Array of rays that missed (ray_dtype)
+            max_length: Length to draw missed rays
+        """
+        for ray in rays:
+            end_point = ray['origin'] + ray['direction'] * max_length
+            self.exporter.add_line(ray['origin'], end_point, group="rays")
