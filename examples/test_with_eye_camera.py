@@ -68,8 +68,8 @@ if True:
 
     # Render the scene
     engine.render(
-        output_image_path="examples/output.png",
-        output_3d_path="examples/microscope_scene.obj"
+        output_image_path="examples/test_with_eye.png",
+        output_3d_path="examples/test_with_eye.obj"
     )
     print(f"Done for lens focal distance {lens_focal_distance}")
     
