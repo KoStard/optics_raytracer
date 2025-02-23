@@ -80,7 +80,7 @@ class Exporter3D:
     
     def save_to_obj(self, output_path: str):
         # Define materials with colors and transparency
-        rays_color = (1, 0, 0, 1)         # red, opaque
+        rays_color = (1, 0, 0, 0.05)         # red, opaque
         materials = {
             "rays": rays_color,
             "rays/missed": rays_color,
