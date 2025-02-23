@@ -1,6 +1,6 @@
 from typing import List
 import numpy as np
-from .simple_camera import Camera
+from .camera import Camera
 from .colored_object import ColoredObject
 from .lens import Lens
 from .color_tracer import ColorTracer
@@ -54,10 +54,13 @@ class OpticsRayTracingEngine:
         rays = self.camera.get_rays()
         
         # Create image saver
-        image_saver = ImageSaver(self.camera.pixel_columns, self.camera.pixel_rows)
+        image_size = self.camera.get_image_size()
+        image_saver = ImageSaver(image_size.width, image_size.height)
         
         # Trace colors for all rays
-        for color in color_tracer.get_colors(rays):
+        colors = color_tracer.get_colors(rays)
+        pixel_colors = self.camera.convert_ray_colors_to_pixel_colors(colors)
+        for color in pixel_colors:
             image_saver.add_pixel(color)
         
         # Save outputs if requested

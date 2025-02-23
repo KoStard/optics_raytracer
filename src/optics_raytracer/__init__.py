@@ -4,7 +4,7 @@ from .surface import surface_dtype
 from .rectangle import rectangle_dtype, Rectangle
 from .circle import circle_dtype, Circle
 from .lens import lens_dtype, Lens
-from .simple_camera import simple_camera_viewport_dtype, Camera
+from .camera import simple_camera_viewport_dtype, Camera
 from .cli import main
 
 __all__ = [

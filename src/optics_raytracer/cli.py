@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict, Any
 from PIL import Image
 from .engine import OpticsRayTracingEngine
-from .simple_camera import Camera, FloatSize, IntegerSize
+from .camera import Camera, FloatSize, IntegerSize, SimpleCamera
 from .lens import Lens
 from .inserted_image import InsertedImage
 import numpy as np
@@ -13,7 +13,7 @@ def parse_config(config: Dict[str, Any]) -> OpticsRayTracingEngine:
     """Parse JSON config into OpticsRayTracingEngine instance"""
     # Parse camera
     cam_cfg = config['camera']
-    camera = Camera.build(
+    camera = SimpleCamera.build(
         camera_center=np.array(cam_cfg['center'], dtype=np.float32),
         focal_distance=cam_cfg['focal_distance'],
         viewport_size=FloatSize.from_width_and_aspect_ratio(

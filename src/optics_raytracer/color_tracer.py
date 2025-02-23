@@ -162,7 +162,7 @@ class ColorTracer:
         missed_mask = ~(any_object_hit_mask | any_lens_hit_mask)
         if np.any(missed_mask):
             self._save_missed_rays(rays[missed_mask])
-                    
+        
         return colors
 
     def _save_hit_rays(self, rays, points, depth=None):
