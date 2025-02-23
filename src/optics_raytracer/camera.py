@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
+from optics_raytracer.export_3d import Exporter3D
 from optics_raytracer.lens import Lens
 from optics_raytracer.surface import get_surface_hit_ts, get_surface_hit_ts_mask
 
@@ -15,7 +16,7 @@ class Camera(ABC):
         pass
     
     @abstractmethod
-    def get_rays(self):
+    def get_rays(self, exporter: Exporter3D, ray_sampling_rate_for_3d_export: float):
         pass
     
     @abstractmethod
@@ -103,20 +104,32 @@ class SimpleCamera(Camera):
         """
         return np.zeros((self.pixel_rows * self.pixel_columns, 3))
 
-    def get_rays(self):
+    def get_rays(self, exporter: Exporter3D, ray_sampling_rate_for_3d_export: float):
         """
-        Generate rays from the camera through each pixel.
+        Generate rays from the camera through each pixel and visualize in 3D.
         
+        Args:
+            exporter: 3D exporter instance
+            ray_sampling_rate_for_3d_export: Fraction of rays to include in visualization
+            
         Returns:
             Array of rays (ray_dtype)
         """
+        # Get pixel points and directions
         pixel_points = get_pixel_points(self.array)
         directions = pixel_points.reshape(-1, 3) - self.camera_center
         directions = directions / np.linalg.norm(directions)
-        return build_rays(
+        
+        # Build rays
+        rays = build_rays(
             np.full_like(directions, self.camera_center),
             directions
         )
+        
+        # Add viewport rectangle to 3D visualization
+        exporter.add_rectangle(self.array)
+        
+        return rays
     
     def convert_ray_colors_to_pixel_colors(self, colors):
         # Returning as is, as one ray is for one pixel here
@@ -155,7 +168,7 @@ class EyeCamera(Camera):
 
     @staticmethod
     def build(
-        camera_center: np.ndarray,
+        viewport_center: np.ndarray,
         lens_distance: float,
         lens_radius: float,
         number_of_circles: int,
@@ -170,7 +183,7 @@ class EyeCamera(Camera):
         Create a new EyeCamera instance.
         
         Args:
-            camera_center: Center point of the camera
+            viewport_center: Center point of the viewport
             lens_distance: Distance from viewport to lens
             lens_radius: Radius of the lens
             number_of_circles: Number of concentric circles on lens
@@ -184,7 +197,6 @@ class EyeCamera(Camera):
             New EyeCamera instance
         """
         viewport_normal = viewport_normal / np.linalg.norm(viewport_normal)
-        viewport_center = camera_center - lens_distance * viewport_normal
         camera_array = np.array(
             (
                 viewport_center,
@@ -202,7 +214,7 @@ class EyeCamera(Camera):
             dtype=eye_camera_viewport_dtype,
         )
         # Create the lens
-        lens_center = camera_center + lens_distance * viewport_normal
+        lens_center = viewport_center + lens_distance * viewport_normal
         lens = Lens.build(
             center=lens_center,
             radius=lens_radius,
@@ -233,13 +245,20 @@ class EyeCamera(Camera):
         """
         return np.zeros((self.pixel_rows * self.pixel_columns, 3))
 
-    def get_rays(self):
+    def get_rays(self, exporter: Exporter3D, ray_sampling_rate_for_3d_export: float):
         """
-        Generate multiple rays per pixel that distribute across the lens surface.
+        Generate multiple rays per pixel that distribute across the lens surface and visualize in 3D.
         
+        Args:
+            exporter: 3D exporter instance
+            ray_sampling_rate_for_3d_export: Fraction of rays to include in visualization
+            
         Returns:
             Array of rays (ray_dtype) where each pixel has number_of_circles * rays_per_circle rays
         """
+        # Add viewport and lens to 3D visualization
+        exporter.add_rectangle(self.array)
+        exporter.add_circle(self.lens.array)
         # Get pixel points on the viewport
         pixel_points = get_pixel_points(self.array)
         pixel_points = pixel_points.reshape(-1, 3)
@@ -269,6 +288,7 @@ class EyeCamera(Camera):
             v = np.cross(self.array['normal'], u)
             transform = np.column_stack([u, v, self.array['normal']])
             circle_points = lens_center + np.dot(circle_points, transform.T)
+            print(lens_center)
             
             all_lens_points.append(circle_points)
         
@@ -292,7 +312,12 @@ class EyeCamera(Camera):
         # Get refracted rays through lens
         refracted_rays = self.lens.get_new_rays(rays_to_lens[hit_mask], hit_points)
         
-        print("Returning camera rays")
+        # Sample rays for visualization
+        tracing_mask = (np.random.rand(len(hit_points)) <= ray_sampling_rate_for_3d_export)
+        for ray, hit_point in zip(rays_to_lens[hit_mask][tracing_mask], hit_points[tracing_mask]):
+            exporter.add_line(ray['origin'], hit_point, group="camera_rays")
+            exporter.add_point(hit_point, group="lens_hits")
+            
         return refracted_rays
 
     def get_image_size(self):

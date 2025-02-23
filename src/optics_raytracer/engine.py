@@ -51,7 +51,7 @@ class OpticsRayTracingEngine:
         )
 
         # Get rays from camera
-        rays = self.camera.get_rays()
+        rays = self.camera.get_rays(self.exporter, self.ray_sampling_rate)
         
         # Create image saver
         image_size = self.camera.get_image_size()
