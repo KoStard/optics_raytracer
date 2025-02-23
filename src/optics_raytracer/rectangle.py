@@ -68,27 +68,29 @@ class Rectangle:
         ))
         
     # Make this a static method accepting the self.array as input, adjust the rest accordingly AI!
-    def get_hits_mask(self, points_array: np.ndarray) -> np.ndarray:
+    @staticmethod
+    def get_hits_mask(rectangle_array: np.ndarray, points_array: np.ndarray) -> np.ndarray:
         """
         Check which points lie within the rectangle.
         
         Args:
+            rectangle_array: Rectangle numpy array with middle_point, normal, width, height and u_vector
             points_array: Array of points to check (Nx3)
             
         Returns:
             Boolean mask array indicating which points are inside the rectangle
         """
-        middle_to_point_vector_array = points_array - self.middle_point
+        middle_to_point_vector_array = points_array - rectangle_array['middle_point']
 
         # Get u and v projections
-        u = self.u_vector[:, np.newaxis]
-        v = np.cross(self.normal, self.u_vector)[:, np.newaxis]
+        u = rectangle_array['u_vector'][:, np.newaxis]
+        v = np.cross(rectangle_array['normal'], rectangle_array['u_vector'])[:, np.newaxis]
         u_projection_vectors = np.matmul(np.matmul(u, u.T) / np.matmul(u.T, u), middle_to_point_vector_array.T).T
         v_projection_vectors = np.matmul(np.matmul(v, v.T) / np.matmul(v.T, v), middle_to_point_vector_array.T).T
 
         return np.logical_and(
-            np.linalg.norm(u_projection_vectors, axis=1) <= self.width / 2,
-            np.linalg.norm(v_projection_vectors, axis=1) <= self.height / 2
+            np.linalg.norm(u_projection_vectors, axis=1) <= rectangle_array['width'] / 2,
+            np.linalg.norm(v_projection_vectors, axis=1) <= rectangle_array['height'] / 2
         )
 
 

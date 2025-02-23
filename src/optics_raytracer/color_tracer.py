@@ -62,7 +62,7 @@ class ColorTracer:
                 obj_ts = get_surface_hit_ts(rays, surface_point, surface_normal)
                 obj_points = get_ray_points_array_at_t_array(rays, obj_ts)
                 obj_mask = get_surface_hit_ts_mask(obj_ts)
-                obj_mask &= obj.rectangle.get_hits_mask(obj_points)
+                obj_mask &= obj.rectangle.get_hits_mask(obj.rectangle.array, obj_points)
                 
             elif isinstance(obj, ColoredCircle):
                 surface_point = obj.circle.center
@@ -114,8 +114,9 @@ class ColorTracer:
             hit_points = get_ray_points_array_at_t_array(rays[hit_masks], hit_ts[hit_masks])
             
             # Get colors from objects
-            for i, obj in zip(hit_indices, hit_object_indices):
-                if obj is not None:
+            for i, obj_index in zip(hit_indices, hit_object_indices):
+                if obj_index is not None:
+                    obj = self.colored_objects[obj_index]
                     colors[i] = obj.get_colors(np.array([hit_points[i]]))[0]
                     
         return colors
