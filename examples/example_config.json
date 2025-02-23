@@ -24,7 +24,7 @@
         },
         {
             "type": "image",
-            "position": [-2, 1, -4],
+            "center": [0, 0, -4],
             "width": 4,
             "u_vector": [1, 0, 0],
             "normal": [0, 0, -1],
@@ -34,6 +34,6 @@
     "output": {
         "image_path": "examples/output.png",
         "export_3d": true,
-        "obj_path": "scene.obj"
+        "obj_path": "examples/scene.obj"
     }
 }
