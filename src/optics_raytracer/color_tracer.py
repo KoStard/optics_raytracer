@@ -2,6 +2,7 @@ import numpy as np
 from typing import List
 
 from optics_raytracer.circle import Circle, ColoredCircle
+from optics_raytracer.inserted_image import InsertedImage
 from optics_raytracer.rectangle import ColoredRectangle
 from .ray import get_ray_points_array_at_t_array, ray_dtype
 from .colored_object import ColoredObject
@@ -18,7 +19,7 @@ class ColorTracer:
         exporter: Exporter3D,
         colored_objects: List[ColoredObject],
         lenses: List[Lens],
-        default_color: np.ndarray = np.array([0, 0, 0])
+        default_color: np.ndarray = np.array([0, 0, 0], dtype=np.float16)
     ):
         """
         Initialize the color tracer.
@@ -33,6 +34,19 @@ class ColorTracer:
         self.colored_objects = colored_objects
         self.lenses = lenses
         self.default_color = default_color
+        
+        for obj in colored_objects:
+            if isinstance(obj, ColoredCircle):
+                self.exporter.add_circle(obj.circle.array, 50)
+            elif isinstance(obj, ColoredRectangle):
+                self.exporter.add_rectangle(obj.rectangle.array)
+            elif isinstance(obj, InsertedImage):
+                self.exporter.add_rectangle(obj.rectangle.array)
+            else:
+                print(f"Unknown object type: {type(obj)}")
+        
+        for lens in lenses:
+            self.exporter.add_circle(lens.array, 50)
 
     def get_colors(self, rays: np.ndarray) -> np.ndarray:
         """
@@ -55,7 +69,7 @@ class ColorTracer:
         
         # Check colored objects
         for obj_index, obj in enumerate(self.colored_objects):
-            if isinstance(obj, ColoredRectangle):
+            if isinstance(obj, ColoredRectangle) or isinstance(obj, InsertedImage):
                 surface_point = obj.rectangle.middle_point
                 surface_normal = obj.rectangle.normal
                 

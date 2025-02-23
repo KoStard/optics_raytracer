@@ -6,8 +6,8 @@ from .primitives import vector_dtype
 rectangle_dtype = np.dtype([
     ('middle_point', *vector_dtype),
     ('normal', *vector_dtype),
-    ('width', np.float64),
-    ('height', np.float64),
+    ('width', np.float32),
+    ('height', np.float32),
     ('u_vector', *vector_dtype),
 ])
 
@@ -67,7 +67,6 @@ class Rectangle:
             dtype=rectangle_dtype
         ))
         
-    # Make this a static method accepting the self.array as input, adjust the rest accordingly AI!
     @staticmethod
     def get_hits_mask(rectangle_array: np.ndarray, points_array: np.ndarray) -> np.ndarray:
         """

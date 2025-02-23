@@ -7,7 +7,7 @@ from .primitives import vector_dtype
 circle_dtype = np.dtype([
     ('center', *vector_dtype),      # Center point of the circle
     ('normal', *vector_dtype),      # Normal vector of the circle's plane
-    ('radius', np.float64),         # Radius of the circle
+    ('radius', np.float32),         # Radius of the circle
 ])
 
 class Circle:

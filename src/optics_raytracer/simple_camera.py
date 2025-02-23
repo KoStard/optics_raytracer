@@ -9,8 +9,8 @@ simple_camera_viewport_dtype = np.dtype(
     [
         ("middle_point", *vector_dtype),
         ("normal", *vector_dtype),
-        ("width", np.float64),
-        ("height", np.float64),
+        ("width", np.float32),
+        ("height", np.float32),
         ("u_vector", *vector_dtype),
         ("pixel_columns", np.int64),
         ("pixel_rows", np.int64),

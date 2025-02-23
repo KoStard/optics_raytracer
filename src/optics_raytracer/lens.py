@@ -5,7 +5,7 @@ from .circle import circle_dtype
 
 lens_dtype = np.dtype([
     *circle_dtype.descr,  # Inherit circle fields
-    ('focal_distance', np.float64),  # Focal distance of the lens
+    ('focal_distance', np.float32),  # Focal distance of the lens
 ])
 
 class Lens:

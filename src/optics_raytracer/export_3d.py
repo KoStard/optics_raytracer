@@ -3,7 +3,7 @@ import math
 
 class Exporter3D:
     def __init__(self):
-        self.vertices = np.empty((0, 3), dtype=np.float64)
+        self.vertices = np.empty((0, 3), dtype=np.float32)
         self.lines = []
         self.vertex_to_index = {}
 
