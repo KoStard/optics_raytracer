@@ -288,7 +288,6 @@ class EyeCamera(Camera):
             v = np.cross(self.array['normal'], u)
             transform = np.column_stack([u, v, self.array['normal']])
             circle_points = lens_center + np.dot(circle_points, transform.T)
-            print(lens_center)
             
             all_lens_points.append(circle_points)
         
@@ -335,5 +334,4 @@ class EyeCamera(Camera):
         """
         # Average the colors for each pixel
         pixel_colors = colors.reshape(self.pixel_rows * self.pixel_columns, self.array['number_of_circles'] * self.array['rays_per_circle'], 3).mean(axis=1)
-        print(pixel_colors.shape)
         return pixel_colors
