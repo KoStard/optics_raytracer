@@ -5,6 +5,7 @@ from .rectangle import rectangle_dtype, Rectangle
 from .circle import circle_dtype, Circle
 from .lens import lens_dtype, Lens
 from .simple_camera import simple_camera_viewport_dtype, Camera
+from .cli import main
 
 __all__ = [
     'vector_dtype',
@@ -20,4 +21,5 @@ __all__ = [
     'Lens',
     'simple_camera_viewport_dtype',
     'Camera',
+    'main',
 ]
