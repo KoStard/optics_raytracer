@@ -19,7 +19,8 @@ class ColorTracer:
         exporter: Exporter3D,
         colored_objects: List[ColoredObject],
         lenses: List[Lens],
-        default_color: np.ndarray = np.array([0, 0, 0], dtype=np.float16)
+        default_color: np.ndarray = np.array([0, 0, 0], dtype=np.float16),
+        ray_sampling_rate_for_3d_export: np.float32 = np.float32(0.01)
     ):
         """
         Initialize the color tracer.
@@ -34,6 +35,7 @@ class ColorTracer:
         self.colored_objects = colored_objects
         self.lenses = lenses
         self.default_color = default_color
+        self.ray_sampling_rate_for_3d_export = ray_sampling_rate_for_3d_export
         
         for obj in colored_objects:
             if isinstance(obj, ColoredCircle):
@@ -155,7 +157,9 @@ class ColorTracer:
             rays: Array of rays that hit objects (ray_dtype)
             points: Array of hit points (Nx3)
         """
-        for ray, point in zip(rays, points):
+        # Save visualization of hit rays
+        tracing_mask = self._get_random_tracing_mask(len(rays))
+        for ray, point in zip(rays[tracing_mask], points[tracing_mask]):
             self.exporter.add_line(ray['origin'], point, group="rays")
             self.exporter.add_point(point, group="hits")
 
@@ -167,6 +171,11 @@ class ColorTracer:
             rays: Array of rays that missed (ray_dtype)
             max_length: Length to draw missed rays
         """
-        for ray in rays:
+        # Save visualization of hit rays
+        tracing_mask = self._get_random_tracing_mask(len(rays))
+        for ray in rays[tracing_mask]:
             end_point = ray['origin'] + ray['direction'] * max_length
             self.exporter.add_line(ray['origin'], end_point, group="rays")
+
+    def _get_random_tracing_mask(self, l):
+        return np.random.rand(l) <= self.ray_sampling_rate_for_3d_export
