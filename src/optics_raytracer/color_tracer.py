@@ -65,90 +65,100 @@ class ColorTracer:
         
         # Find closest hits for all objects
         hit_ts = np.full(len(rays), np.inf)
-        object_hit_masks = np.zeros(len(rays), dtype=bool)
-        lens_hit_masks = np.zeros(len(rays), dtype=bool)
+        object_hit_mask = np.zeros(len(rays), dtype=bool)
+        lens_hit_mask = np.zeros(len(rays), dtype=bool)
         hit_object_indices = np.full(len(rays), -1)
+        hit_lens_indices = np.full(len(rays), -1)
         
         # Check colored objects
-        for obj_index, obj in enumerate(self.colored_objects):
-            if isinstance(obj, ColoredRectangle) or isinstance(obj, InsertedImage):
-                surface_point = obj.rectangle.middle_point
-                surface_normal = obj.rectangle.normal
+        for obj_index, lens in enumerate(self.colored_objects):
+            if isinstance(lens, ColoredRectangle) or isinstance(lens, InsertedImage):
+                surface_point = lens.rectangle.middle_point
+                surface_normal = lens.rectangle.normal
                 
                 # Get hit times and mask
                 obj_ts = get_surface_hit_ts(rays, surface_point, surface_normal)
                 obj_points = get_ray_points_array_at_t_array(rays, obj_ts)
                 obj_mask = get_surface_hit_ts_mask(obj_ts)
-                obj_mask &= obj.rectangle.get_hits_mask(obj.rectangle.array, obj_points)
+                obj_mask &= lens.rectangle.get_hits_mask(lens.rectangle.array, obj_points)
                 
-            elif isinstance(obj, ColoredCircle):
-                surface_point = obj.circle.center
-                surface_normal = obj.circle.normal
+            elif isinstance(lens, ColoredCircle):
+                surface_point = lens.circle.center
+                surface_normal = lens.circle.normal
                 
                 # Get hit times and mask
                 obj_ts = get_surface_hit_ts(rays, surface_point, surface_normal)
                 obj_points = get_ray_points_array_at_t_array(rays, obj_ts)
                 obj_mask = get_surface_hit_ts_mask(obj_ts)
-                obj_mask &= obj.circle.get_hits_mask(obj.circle.array, obj_points)
+                obj_mask &= lens.circle.get_hits_mask(lens.circle.array, obj_points)
             else:
-                print(f"Unknown object type: {type(obj)}")
+                print(f"Unknown object type: {type(lens)}")
                 continue
             
             # Update closest hits
             closer_mask = obj_ts < hit_ts
             update_mask = obj_mask & closer_mask
             hit_ts[update_mask] = obj_ts[update_mask]
-            object_hit_masks[update_mask] = True
+            object_hit_mask[update_mask] = True
             hit_object_indices[update_mask] = obj_index
             
         # Check lenses
-        for lens in self.lenses:
+        for lens_index, lens in enumerate(self.lenses):
             lens_ts = get_surface_hit_ts(rays, lens.center, lens.normal)
-            lens_mask = get_surface_hit_ts_mask(lens_ts)
-            lens_mask &= Circle.get_hits_mask(lens.array, rays['origin'])
+            lens_hit_mask = get_surface_hit_ts_mask(lens_ts)
+            lens_hit_mask &= Circle.get_hits_mask(lens.array, rays['origin'])
             
             # Only process rays that hit this lens first
             first_hit_mask = lens_ts < hit_ts
-            process_mask = lens_mask & first_hit_mask
-            object_hit_masks[process_mask] = False
-            hit_object_indices[process_mask] = -1
+            update_mask = lens_hit_mask & first_hit_mask
             
-            if np.any(process_mask):
-                # Get hit points and new rays
-                hit_points = get_ray_points_array_at_t_array(rays[process_mask], lens_ts[process_mask])
-                self._save_hit_rays(rays[process_mask], hit_points)
-                new_rays = lens.get_new_rays(rays[process_mask], hit_points)
-                
-                # Recursively trace new rays
-                new_colors = self.get_colors(new_rays)
-                
-                # Update colors for these rays
-                colors[process_mask] = new_colors
-                
-                # Mark these rays as processed
-                lens_hit_masks[process_mask] = True
-                
-        # Get colors for non-lens hits
-        if np.any(object_hit_masks):
-            hit_points = get_ray_points_array_at_t_array(rays[object_hit_masks], hit_ts[object_hit_masks])
+            hit_ts[update_mask] = lens_ts[update_mask]
+            object_hit_mask[update_mask] = False
+            hit_object_indices[update_mask] = -1
+            hit_lens_indices[update_mask] = lens_index
+            lens_hit_mask[update_mask] = True
+        
+        if np.any(lens_hit_mask):
+            hit_points = get_ray_points_array_at_t_array(rays[lens_hit_mask], hit_ts[lens_hit_mask])
             
             # Get the unique values.
-            colored_object_indices = np.arange(len(self.colored_objects))
+            lens_indices = np.arange(len(self.lenses))
 
             # Create a dictionary of masks, where each mask shows the positions of the corresponding value.
-            masks = {val: (hit_object_indices == val) for val in colored_object_indices}
+            masks = {val: (hit_lens_indices == val) for val in lens_indices}
+            
+            for hit_lens_index, hit_lens_mask in masks.items():
+                # hit_lens_mask represents the mask of current lens being hit
+                if np.any(hit_lens_mask):
+                    lens = self.lenses[hit_lens_index]
+                    new_rays = lens.get_new_rays(rays[hit_lens_mask], hit_points[hit_lens_mask[lens_hit_mask]])
+                    # TODO: Optimization opportunity, collect all rays together and call get_colors once
+                    colors[hit_lens_mask] = self.get_colors(new_rays)
+            
+            # Save visualization of hit rays
+            self._save_hit_rays(rays[lens_hit_mask], hit_points)
+                
+        # Get colors for non-lens hits
+        if np.any(object_hit_mask):
+            hit_points = get_ray_points_array_at_t_array(rays[object_hit_mask], hit_ts[object_hit_mask])
+            
+            # Get the unique values.
+            lens_indices = np.arange(len(self.colored_objects))
+
+            # Create a dictionary of masks, where each mask shows the positions of the corresponding value.
+            masks = {val: (hit_object_indices == val) for val in lens_indices}
             
             for hit_object_index, hit_object_mask in masks.items():
                 if np.any(hit_object_mask):
                     # Get colors from objects
-                    obj = self.colored_objects[hit_object_index]
-                    colors[hit_object_mask] = obj.get_colors(hit_points[hit_object_mask])
+                    lens = self.colored_objects[hit_object_index]
+                    colors[hit_object_mask] = lens.get_colors(hit_points[hit_object_mask[object_hit_mask]])
             
             # Save visualization of hit rays
-            self._save_hit_rays(rays[object_hit_masks], hit_points)
+            self._save_hit_rays(rays[object_hit_mask], hit_points)
         
         # Save visualization of missed rays
-        missed_mask = ~(object_hit_masks | lens_hit_masks)
+        missed_mask = ~(object_hit_mask | lens_hit_mask)
         if np.any(missed_mask):
             self._save_missed_rays(rays[missed_mask])
                     
@@ -168,7 +178,7 @@ class ColorTracer:
             self.exporter.add_line(ray['origin'], point, group="rays")
             self.exporter.add_point(point, group="hits")
 
-    def _save_missed_rays(self, rays, max_length=1):
+    def _save_missed_rays(self, rays, max_length=1000):
         """
         Save visualization of rays that missed all objects.
         
@@ -180,7 +190,7 @@ class ColorTracer:
         tracing_mask = self._get_random_tracing_mask(len(rays))
         for ray in rays[tracing_mask]:
             end_point = ray['origin'] + ray['direction'] * max_length
-            self.exporter.add_line(ray['origin'], end_point, group="rays")
+            self.exporter.add_line(ray['origin'], end_point, group="missed-rays")
 
     def _get_random_tracing_mask(self, l):
         return np.random.rand(l) <= self.ray_sampling_rate_for_3d_export

@@ -60,7 +60,11 @@ class InsertedImage(ColoredObject):
         
         # Get u and v components
         u = self.rectangle.u_vector
-        v = np.cross(self.rectangle.normal, u)
+        # Making negative, as y in image is supposed to be pointing "down"
+        v = -np.cross(self.rectangle.normal, u)
+        
+        u = u / np.linalg.norm(u)
+        v = v / np.linalg.norm(v)
         
         # Calculate image coordinates (0-1 range)
         u_coords = np.dot(center_to_points, u) / self.width + 0.5

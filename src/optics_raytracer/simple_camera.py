@@ -117,6 +117,7 @@ class Camera:
         """
         pixel_points = get_pixel_points(self.array)
         directions = pixel_points.reshape(-1, 3) - self.camera_center
+        directions = directions / np.linalg.norm(directions)
         return build_rays(
             np.full_like(directions, self.camera_center),
             directions
