@@ -118,7 +118,7 @@ class SimpleCamera(Camera):
         # Get pixel points and directions
         pixel_points = get_pixel_points(self.array)
         directions = pixel_points.reshape(-1, 3) - self.camera_center
-        directions = directions / np.linalg.norm(directions)
+        directions = directions / np.linalg.norm(directions, axis=1, keepdims=True)
         
         # Build rays
         rays = build_rays(

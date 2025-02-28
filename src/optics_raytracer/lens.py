@@ -71,7 +71,8 @@ class Lens:
         normal_away_from_origin = np.matvec(hitting_rays['direction'], self.normal) > 0
         scale = self.focal_distance / np.matvec(hitting_rays['direction'], self.normal)
         new_directions = hitting_rays['direction'] * scale[:, np.newaxis] + (self.center - hit_points)
-        new_directions = new_directions / np.linalg.norm(new_directions)
+        # The issue arises here
+        new_directions = new_directions / np.linalg.norm(new_directions, axis=1, keepdims=True)
         new_directions[~normal_away_from_origin] *= -1
         if self.focal_distance < 0:
             new_directions *= -1
