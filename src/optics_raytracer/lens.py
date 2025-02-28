@@ -60,16 +60,31 @@ class Lens:
         Returns:
             Array of refracted rays (ray_dtype)
         """
-        # Vector from lens center to hit points
-        center_to_point = hit_points - self.center
+        # Need proof if this works, as it's a faster algorithm
+        # # Vector from lens center to hit points
+        # center_to_point = hit_points - self.center
         
-        # Scale by focal distance and ray normal component
-        scale = np.matvec(hitting_rays['direction'], self.normal) / self.focal_distance
-        direction_change = center_to_point * scale[:, np.newaxis]
+        # # Scale by focal distance and ray normal component
+        # # TODO fix cases when normal is pointing the other direction
+        # scale = np.matvec(hitting_rays['direction'], self.normal) / self.focal_distance
+        # direction_change = center_to_point * scale[:, np.newaxis]
         
-        # Calculate new directions
-        new_directions = hitting_rays['direction'] - direction_change
+        # # Calculate new directions
+        # new_directions = hitting_rays['direction'] - direction_change
+        # new_directions = new_directions / np.linalg.norm(new_directions)
+        
+        # # Build new rays
+        # return build_rays(hit_points, new_directions)
+        
+        def rows_dot(m1, m2):
+            return np.einsum('ij,ij->i', m1, m2)
+        
+        normal_away_from_origin = np.matvec(hitting_rays['direction'], self.normal) > 0
+        normals = np.full((len(hitting_rays), 3), self.normal)
+        normals[~normal_away_from_origin] = -self.normal
+        scale = ((rows_dot(hitting_rays['origin'] - self.center, normals) + self.focal_distance) / rows_dot(hitting_rays['direction'], normals))
+        new_directions = self.center - hitting_rays['origin'] + hitting_rays['direction'] * scale[:, np.newaxis]
         new_directions = new_directions / np.linalg.norm(new_directions)
-        
-        # Build new rays
+        if self.focal_distance < 0:
+            new_directions = -new_directions
         return build_rays(hit_points, new_directions)
