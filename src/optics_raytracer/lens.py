@@ -60,31 +60,19 @@ class Lens:
         Returns:
             Array of refracted rays (ray_dtype)
         """
-        # Need proof if this works, as it's a faster algorithm
-        # # Vector from lens center to hit points
-        # center_to_point = hit_points - self.center
-        
-        # # Scale by focal distance and ray normal component
-        # # TODO fix cases when normal is pointing the other direction
-        # scale = np.matvec(hitting_rays['direction'], self.normal) / self.focal_distance
-        # direction_change = center_to_point * scale[:, np.newaxis]
-        
-        # # Calculate new directions
-        # new_directions = hitting_rays['direction'] - direction_change
-        # new_directions = new_directions / np.linalg.norm(new_directions)
-        
-        # # Build new rays
-        # return build_rays(hit_points, new_directions)
-        
-        def rows_dot(m1, m2):
-            return np.einsum('ij,ij->i', m1, m2)
-        
+        # Working based on this idea:
+        # - parallel rays meet at the focal distance
+        # - the ray passing through the center of the lens doesn't change direction
+        # - so the ray from the hit point goes to the point where the parallel ray going through the center of the lens would hit the focal plane
+        # - if we make a vector from the point where the original ray would hit the focal plane if it didn't change direction, we'll see that this vector is exactly and always self.center - hit_point
+        # - the rest is just getting the vector from hit_point to the point where the original ray would hit the focal plane, adding the self.center - hit_point vector, and we have the new direction
+        # - then we need to normalize it
+        # - we also swap for cases when the normal is in the direction of the ray origin
         normal_away_from_origin = np.matvec(hitting_rays['direction'], self.normal) > 0
-        normals = np.full((len(hitting_rays), 3), self.normal)
-        normals[~normal_away_from_origin] = -self.normal
-        scale = ((rows_dot(hitting_rays['origin'] - self.center, normals) + self.focal_distance) / rows_dot(hitting_rays['direction'], normals))
-        new_directions = self.center - hitting_rays['origin'] + hitting_rays['direction'] * scale[:, np.newaxis]
+        scale = self.focal_distance / np.matvec(hitting_rays['direction'], self.normal)
+        new_directions = hitting_rays['direction'] * scale[:, np.newaxis] + (self.center - hit_points)
         new_directions = new_directions / np.linalg.norm(new_directions)
+        new_directions[~normal_away_from_origin] *= -1
         if self.focal_distance < 0:
-            new_directions = -new_directions
+            new_directions *= -1
         return build_rays(hit_points, new_directions)
