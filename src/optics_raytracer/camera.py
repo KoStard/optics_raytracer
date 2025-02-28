@@ -141,8 +141,8 @@ class SimpleCamera(Camera):
 eye_camera_viewport_dtype = np.dtype(
     [
         *pixelated_viewport_dtype.descr,
-        ("lens_distance", np.float64),
-        ("lens_radius", np.float64),
+        ("lens_distance", np.float32),
+        ("lens_radius", np.float32),
         ("number_of_circles", np.int32),
         ("rays_per_circle", np.int32),
     ]
