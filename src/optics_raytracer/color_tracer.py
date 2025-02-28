@@ -64,7 +64,7 @@ class ColorTracer:
         colors = np.tile(self.default_color, (len(rays), 1))
         
         # Find closest hits for all objects
-        closest_hit_ts = np.full(len(rays), np.inf)
+        closest_hit_ts = np.full(len(rays), np.inf, dtype=np.float32)
         any_object_hit_mask = np.zeros(len(rays), dtype=bool)
         ray_hits_any_lens_mask = np.zeros(len(rays), dtype=bool)
         ray_hitting_object_indices_array = np.full(len(rays), -1)
