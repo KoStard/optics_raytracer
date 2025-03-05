@@ -58,18 +58,18 @@ Create a config.json file:
         },
         {
             "type": "image",          // Type of object
-            "left_top": [x, y, z],    // Top-left corner position of image
+            "image_path": "examples/image.png", // Path to source image file
             "width": 4.0,             // Physical width of image in world units
-            "u_vector": [x, y, z],    // Right direction vector of image plane
+            "center": [x, y, z],      // Center position of image
             "normal": [x, y, z],      // Image plane orientation (normal vector)
-            "image_path": "examples/image.png" // Path to source image file
+            "u_vector": [x, y, z]     // Right direction vector of image plane
         }
     ],
     "output": {
         "image_path": "output.png",   // Path to save rendered image
-        "export_3d": true,            // Whether to export 3D scene
-        "obj_path": "scene.obj"       // Path to save 3D scene (if export_3d is true)
-    }
+        "obj_path": "scene.obj"       // Path to save 3D scene (optional)
+    },
+    "ray_sampling_rate": 0.01         // Rate for sampling rays in 3D export (optional)
 }
 ```
 
@@ -78,8 +78,8 @@ Create a config.json file:
 #### Camera Settings
 - **center**: The 3D position of the camera in world coordinates (x,y,z)
 - **focal_distance**: Distance from camera to the viewport plane
-- **viewport_width**: Alternative way to specify viewport width (height calculated automatically)
-- **image_size**: Resolution of output image in pixels (width, height)
+- **viewport_width**: Width of viewport in world units (height calculated based on aspect ratio)
+- **image_size**: Resolution of output image in pixels [width, height]
 - **u_vector**: Right direction vector of the camera (typically [1,0,0])
 - **viewport_normal**: Direction the camera is pointing (normal vector away from camera)
 
@@ -91,16 +91,18 @@ Create a config.json file:
   - **normal**: Orientation of lens (normal vector)
   - **focal_distance**: Focal length (positive for convex, negative for concave lenses)
 - For images:
-  - **position**: Top-left corner position of image in 3D space
-  - **width**: Physical width of image in world units
-  - **u_vector**: Right direction vector of image plane
-  - **normal**: Orientation of image plane (normal vector)
   - **image_path**: Path to source image file
+  - **width**: Physical width of image in world units
+  - **center**: Center position of image in 3D space
+  - **normal**: Orientation of image plane (normal vector)
+  - **u_vector**: Right direction vector of image plane
 
 #### Output Settings
 - **image_path**: Path to save rendered output image
-- **export_3d**: Whether to export 3D scene (true/false)
-- **obj_path**: Path to save 3D scene file (if export_3d is true)
+- **obj_path**: Path to save 3D scene file (optional)
+
+#### Additional Settings
+- **ray_sampling_rate**: Rate for sampling rays in 3D export (optional, default value used if not specified)
 
 #### Examples
 
@@ -123,56 +125,69 @@ Notice that not all rays and hits are rendered in the OBJ to keep the file light
 ### 2. Python Configuration
 
 ```python
-from optics_raytracer import (
-    OpticsRayTracingEngine, Camera, Lens, InsertedImage,
-    IntegerSize, Point3, Vec3
-)
-from PIL import Image
+import numpy as np
+from optics_raytracer.camera import SimpleCamera, FloatSize, IntegerSize
+from optics_raytracer.lens import Lens
+from optics_raytracer.inserted_image import InsertedImage
+from optics_raytracer.engine import OpticsRayTracingEngine
 
-# Setup camera
-camera = Camera(
-    Point3(0, 0, 0), 
-    1,
-    IntegerSize(400, 225).float_scale_to_width(2),
-    IntegerSize(400, 225),
-    Vec3(1, 0, 0),
-    Vec3(0, 0, -1)
-)
-
-# Load image and create objects
-image = Image.open("examples/image.png")
-inserted_image = InsertedImage(
-    Point3(-2, 1, -4),
-    4,
-    IntegerSize(image.width, image.height).float_scale_to_width(4).height,
-    Vec3(1, 0, 0),
-    Vec3(0, 0, -1),
-    image
+# Create camera
+camera = SimpleCamera.build(
+    camera_center=np.array([0, 0, 0], dtype=np.float32),
+    focal_distance=1.0,
+    viewport_size=FloatSize(2, 2),
+    image_size=IntegerSize(400, 400),
+    viewport_u_vector=np.array([1, 0, 0], dtype=np.float32),
+    viewport_normal=np.array([0, 0, -1], dtype=np.float32)
 )
 
-lens1 = Lens(Point3(0, 0, -2), 1, Vec3(0, 0, -1), -1)
-lens2 = Lens(Point3(0, 0, -3), 1, Vec3(0, 0, -1), 1)
+# Create a lens
+lens = Lens.build(
+    center=np.array([0, 0, -2], dtype=np.float32),
+    radius=1.0,
+    normal=np.array([0, 0, -1], dtype=np.float32),
+    focal_distance=1.0
+)
 
-# Create and run engine
+# Create an image
+image = InsertedImage(
+    image_path="examples/image.png",
+    width=4.0,
+    height=4.0,
+    middle_point=np.array([0, 0, -5], dtype=np.float32),
+    normal=np.array([0, 0, -1], dtype=np.float32),
+    u_vector=np.array([1, 0, 0], dtype=np.float32)
+)
+
+# Create ray tracing engine
 engine = OpticsRayTracingEngine(
-    camera,
-    [lens1, lens2, inserted_image],
-    IntegerSize(400, 225)
+    camera=camera,
+    objects=[image],
+    lenses=[lens],
+    ray_sampling_rate_for_3d_export=0.01
 )
-engine.render('output.png', export_3d=True, obj_output_path='scene.obj')
+
+# Render the scene
+engine.render(
+    output_image_path="examples/output.png",
+    output_3d_path="examples/scene.obj"
+)
+
+print("Rendering complete. Check examples/output.png for the result.")
 ```
 
 ### 3. Dictionary Configuration from Python
 
 ```python
-from optics_raytracer import parse_config
+from optics_raytracer.cli import parse_config
 
+# Define the scene using a dictionary (similar to JSON structure
 config = {
     "camera": {
         "center": [0, 0, 0],
-        "focal_distance": 1,
-        "viewport_width": 2,
-        "image_size": [400, 225],
+        "focal_distance": 1.0,
+        "viewport_width": 2.0,
+        "image_size": [400, 400],
         "u_vector": [1, 0, 0],
         "viewport_normal": [0, 0, -1]
     },
@@ -180,28 +195,36 @@ config = {
         {
             "type": "lens",
             "center": [0, 0, -2],
-            "radius": 1,
+            "radius": 1.0,
             "normal": [0, 0, -1],
-            "focal_distance": -1
+            "focal_distance": 1.0
         },
         {
             "type": "image",
-            "position": [-2, 1, -4],
-            "width": 4,
-            "u_vector": [1, 0, 0],
+            "image_path": "examples/image.png",
+            "width": 4.0,
+            "center": [0, 0, -5],
             "normal": [0, 0, -1],
-            "image_path": "examples/image.png"
+            "u_vector": [1, 0, 0]
         }
     ],
     "output": {
-        "image_path": "output.png",
-        "export_3d": True,
-        "obj_path": "scene.obj"
-    }
+        "image_path": "examples/output_dict.png",
+        "obj_path": "examples/scene_dict.obj"
+    },
+    "ray_sampling_rate": 0.01
 }
 
+# Parse the config and get the engine
 engine = parse_config(config)
-engine.render('output.png', export_3d=True, obj_output_path='scene.obj')
+
+# Render the scene
+engine.render(
+    output_image_path=config['output']['image_path'],
+    output_3d_path=config['output'].get('obj_path')
+)
+
+print("Rendering complete. Check examples/output_dict.png for the result.")
 ```
 
 ## Development
@@ -210,7 +233,7 @@ To install for development:
 ```bash
 git clone https://github.com/KoStard/optics_raytracer
 cd optics_raytracer
-uv pip install -e .
+uv tool install .
 ```
 
 ## License
