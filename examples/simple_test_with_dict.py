@@ -6,7 +6,7 @@ config = {
         "center": [0, 0, 0],
         "focal_distance": 1.0,
         "viewport_width": 2.0,
-        "image_size": [400, 400],
+        "image_size": [1600, 1600],
         "u_vector": [1, 0, 0],
         "viewport_normal": [0, 0, -1]
     },
