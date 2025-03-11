@@ -2,27 +2,27 @@ import json
 import sys
 from pathlib import Path
 from typing import Dict, Any
-from PIL import Image
 from .engine import OpticsRayTracingEngine
 from .camera import Camera, FloatSize, IntegerSize, SimpleCamera
 from .lens import Lens
 from .inserted_image import InsertedImage
-import numpy as np
+import torch
+from .torch_details import device
 
 def parse_config(config: Dict[str, Any]) -> OpticsRayTracingEngine:
     """Parse JSON config into OpticsRayTracingEngine instance"""
     # Parse camera
     cam_cfg = config['camera']
     camera = SimpleCamera.build(
-        camera_center=np.array(cam_cfg['center'], dtype=np.float32),
+        camera_center=torch.tensor(cam_cfg['center'], dtype=torch.float32).to(device),
         focal_distance=cam_cfg['focal_distance'],
         viewport_size=FloatSize.from_width_and_aspect_ratio(
             cam_cfg['viewport_width'],
             IntegerSize(*cam_cfg['image_size']).aspect_ratio
         ),
         image_size=IntegerSize(*cam_cfg['image_size']),
-        viewport_u_vector=np.array(cam_cfg['u_vector'], dtype=np.float32),
-        viewport_normal=np.array(cam_cfg['viewport_normal'], dtype=np.float32)
+        viewport_u_vector=torch.tensor(cam_cfg['u_vector'], dtype=torch.float32).to(device),
+        viewport_normal=torch.tensor(cam_cfg['viewport_normal'], dtype=torch.float32).to(device)
     )
 
     # Parse objects
@@ -31,9 +31,9 @@ def parse_config(config: Dict[str, Any]) -> OpticsRayTracingEngine:
     for obj in config['objects']:
         if obj['type'] == 'lens':
             lenses.append(Lens.build(
-                center=np.array(obj['center'], dtype=np.float32),
+                center=torch.tensor(obj['center'], dtype=torch.float32).to(device),
                 radius=obj['radius'],
-                normal=np.array(obj['normal'], dtype=np.float32),
+                normal=torch.tensor(obj['normal'], dtype=torch.float32).to(device),
                 focal_distance=obj['focal_distance']
             ))
         elif obj['type'] == 'image':
@@ -45,9 +45,9 @@ def parse_config(config: Dict[str, Any]) -> OpticsRayTracingEngine:
                 image_path=str(image_path),
                 width=obj['width'],
                 height=obj.get('height', obj['width']),  # Default to square if height not specified
-                middle_point=np.array(obj['center'], dtype=np.float32),
-                normal=np.array(obj['normal'], dtype=np.float32),
-                u_vector=np.array(obj['u_vector'], dtype=np.float32)
+                middle_point=torch.tensor(obj['center'], dtype=torch.float32).to(device),
+                normal=torch.tensor(obj['normal'], dtype=torch.float32).to(device),
+                u_vector=torch.tensor(obj['u_vector'], dtype=torch.float32).to(device)
             ))
 
     return OpticsRayTracingEngine(

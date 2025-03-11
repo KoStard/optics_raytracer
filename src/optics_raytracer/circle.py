@@ -1,38 +1,25 @@
-import numpy as np
-
+import torch
 from optics_raytracer.colored_object import ColoredObject
-from .surface import surface_dtype
-from .primitives import vector_dtype
 
-circle_dtype = np.dtype([
-    ('center', *vector_dtype),      # Center point of the circle
-    ('normal', *vector_dtype),      # Normal vector of the circle's plane
-    ('radius', np.float32),         # Radius of the circle
-])
 
 class Circle:
-    """
-    Wrapper class for circle_dtype numpy arrays with helper methods.
-    """
-    def __init__(self, circle_array: np.ndarray):
-        if circle_array.dtype != circle_dtype:
-            raise ValueError(f"Input array must have dtype {circle_dtype}")
-        self.array = circle_array
+    def __init__(self, circle_data: dict):
+        self.circle_data = circle_data
 
     @property
-    def center(self) -> np.ndarray:
-        return self.array['center']
+    def center(self) -> torch.Tensor:
+        return self.circle_data['center']
 
     @property
-    def normal(self) -> np.ndarray:
-        return self.array['normal']
+    def normal(self) -> torch.Tensor:
+        return self.circle_data['normal']
 
     @property
     def radius(self) -> float:
-        return self.array['radius']
+        return self.circle_data['radius']
 
     @staticmethod
-    def build(center: np.ndarray, radius: float, normal: np.ndarray) -> 'Circle':
+    def build(center: torch.Tensor, radius: float, normal: torch.Tensor) -> 'Circle':
         """
         Create a new Circle instance.
         
@@ -44,29 +31,30 @@ class Circle:
         Returns:
             New Circle instance
         """
-        normal = normal / np.linalg.norm(normal)  # Normalize
-        return Circle(np.array(
-            (center, normal, radius),
-            dtype=circle_dtype
-        ))
+        normal = normal / torch.linalg.norm(normal)  # Normalize
+        return Circle({
+            'center': center, 
+            'normal': normal, 
+            'radius': radius
+        })
 
     @staticmethod
-    def get_hits_mask(circle_array: np.ndarray, points_array: np.ndarray) -> np.ndarray:
+    def get_hits_mask(circle_data: dict, points_array: torch.Tensor) -> torch.Tensor:
         """
         Check which points lie within the circle. Assumes that it's already in the plane.
         
         Args:
-            circle_array: Circle numpy array with center, normal and radius
+            circle_data: Circle numpy array with center, normal and radius
             points_array: Array of points to check (Nx3)
             
         Returns:
             Boolean mask array indicating which points are inside the circle
         """
         # Vector from center to each point
-        center_to_point = points_array - circle_array['center']
+        center_to_point = points_array - circle_data['center']
         
         # Then check if points are within radius
-        within_radius = np.linalg.norm(center_to_point, axis=1) <= circle_array['radius']
+        within_radius = torch.linalg.norm(center_to_point, axis=1) <= circle_data['radius']
         
         return within_radius
 
@@ -75,7 +63,7 @@ class ColoredCircle(ColoredObject):
     """
     A circle that can return colors for points that hit its surface.
     """
-    def __init__(self, circle: Circle, color: np.ndarray):
+    def __init__(self, circle: Circle, color: torch.Tensor):
         """
         Create a new ColoredCircle.
         
@@ -86,7 +74,7 @@ class ColoredCircle(ColoredObject):
         self.circle = circle
         self.color = color
 
-    def get_colors(self, points: np.ndarray) -> np.ndarray:
+    def get_colors(self, points: torch.Tensor) -> torch.Tensor:
         """
         Get colors for an array of points on its surface.
         
@@ -98,10 +86,10 @@ class ColoredCircle(ColoredObject):
             Points that don't hit the circle will have color [0,0,0]
         """
         # Create empty array of black colors
-        colors = np.zeros_like(points)
+        colors = torch.zeros_like(points)
         
         # Get mask of points that hit the circle
-        hits_mask = self.circle.get_hits_mask(self.circle.array, points)
+        hits_mask = self.circle.get_hits_mask(self.circle.circle_data, points)
         
         # Set color for hit points
         colors[hits_mask] = self.color

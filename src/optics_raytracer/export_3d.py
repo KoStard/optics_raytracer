@@ -1,48 +1,50 @@
-import numpy as np
+import torch
 import math
+from .torch_details import device
+
+# Warning, check if the device is good here
 
 class Exporter3D:
     def __init__(self):
-        self.vertices = np.empty((0, 3), dtype=np.float32)
+        self.vertices = torch.empty((0, 3), dtype=torch.float32).to(device)
         self.lines = []
         self.vertex_to_index = {}
 
-    def _add_vertex(self, point: np.ndarray):
+    def _add_vertex(self, point: torch.Tensor):
         key = tuple(point)
         if key in self.vertex_to_index:
             return self.vertex_to_index[key]
         
         index = len(self.vertices) + 1
-        self.vertices = np.vstack([self.vertices, point])
+        self.vertices = torch.vstack([self.vertices, point])
         self.vertex_to_index[key] = index
         return index
 
-    def add_line(self, start: np.ndarray, end: np.ndarray, group="rays"):
+    def add_line(self, start: torch.Tensor, end: torch.Tensor, group="rays"):
         idx1 = self._add_vertex(start)
         idx2 = self._add_vertex(end)
         self.lines.append(([idx1, idx2], group))
 
-    def add_circle(self, circle: np.ndarray, resolution=50):
-        """Add a circle using circle_dtype"""
+    def add_circle(self, circle: torch.Tensor, resolution=50):
         normal = circle['normal']
         center = circle['center']
         radius = circle['radius']
         
         # Find orthogonal basis vectors
         if abs(normal[0]) < 0.9:
-            arbitrary = np.array([1, 0, 0])
+            arbitrary = torch.tensor([1, 0, 0], dtype=torch.float32).to(device)
         else:
-            arbitrary = np.array([0, 1, 0])
-        tangent = np.cross(normal, arbitrary)
-        tangent /= np.linalg.norm(tangent)
-        binormal = np.cross(normal, tangent)
+            arbitrary = torch.tensor([0, 1, 0], dtype=torch.float32).to(device)
+        tangent = torch.cross(normal, arbitrary)
+        tangent /= torch.linalg.norm(tangent)
+        binormal = torch.cross(normal, tangent)
         
         # Generate circle points
-        angles = np.linspace(0, 2 * math.pi, resolution)
+        angles = torch.linspace(0, 2 * math.pi, resolution).to(device)
         points = (
-            center[np.newaxis, :] + 
-            radius * np.cos(angles)[:, np.newaxis] * tangent[np.newaxis, :] +
-            radius * np.sin(angles)[:, np.newaxis] * binormal[np.newaxis, :]
+            center[torch.newaxis, :] + 
+            radius * torch.cos(angles)[:, torch.newaxis] * tangent[torch.newaxis, :] +
+            radius * torch.sin(angles)[:, torch.newaxis] * binormal[torch.newaxis, :]
         )
         
         # Add lines for the circle
@@ -54,11 +56,10 @@ class Exporter3D:
             prev_idx = idx
         self.lines.append(([prev_idx, start_idx], "circles"))
 
-    def add_rectangle(self, rectangle: np.ndarray):
-        """Add a rectangle using rectangle_dtype"""
+    def add_rectangle(self, rectangle: torch.Tensor):
         center = rectangle['middle_point']
         u = rectangle['u_vector']
-        v = np.cross(rectangle['normal'], u)
+        v = torch.cross(rectangle['normal'], u)
         width = rectangle['width']
         height = rectangle['height']
         
@@ -72,9 +73,9 @@ class Exporter3D:
         for start, end in [(p1, p2), (p2, p3), (p3, p4), (p4, p1)]:
             self.add_line(start, end, group="rectangles")
     
-    def add_point(self, point: np.ndarray, group="hits", size=0.01):
+    def add_point(self, point: torch.Tensor, group="hits", size=0.01):
         """Add a point as a small cross for visibility"""
-        offsets = np.eye(3) * size
+        offsets = torch.eye(3).to(device) * size
         for axis in range(3):
             self.add_line(point - offsets[axis], point + offsets[axis], group)
     

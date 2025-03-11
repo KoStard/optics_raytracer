@@ -1,36 +1,25 @@
-import numpy as np
-
+import torch
 from optics_raytracer.ray import build_rays
-from .circle import circle_dtype
 
-lens_dtype = np.dtype([
-    *circle_dtype.descr,  # Inherit circle fields
-    ('focal_distance', np.float32),  # Focal distance of the lens
-])
 
 class Lens:
-    """
-    Wrapper class for lens_dtype numpy arrays with helper methods.
-    """
-    def __init__(self, lens_array: np.ndarray):
-        if lens_array.dtype != lens_dtype:
-            raise ValueError(f"Input array must have dtype {lens_dtype}")
-        self.array = lens_array
+    def __init__(self, lens_data: dict):
+        self.lens_data = lens_data
         
     @property
-    def center(self) -> np.ndarray:
-        return self.array['center']
+    def center(self) -> torch.Tensor:
+        return self.lens_data['center']
     
     @property
-    def normal(self) -> np.ndarray:
-        return self.array['normal']
+    def normal(self) -> torch.Tensor:
+        return self.lens_data['normal']
     
     @property
     def focal_distance(self) -> float:
-        return self.array['focal_distance']
+        return self.lens_data['focal_distance']
 
     @staticmethod
-    def build(center: np.ndarray, radius: float, normal: np.ndarray, focal_distance: float) -> 'Lens':
+    def build(center: torch.Tensor, radius: float, normal: torch.Tensor, focal_distance: float) -> 'Lens':
         """
         Create a new Lens instance.
         
@@ -43,22 +32,24 @@ class Lens:
         Returns:
             New Lens instance
         """
-        normal = normal / np.linalg.norm(normal)  # Normalize
-        return Lens(np.array(
-            (center, normal, radius, focal_distance),
-            dtype=lens_dtype
-        ))
+        normal = normal / torch.linalg.norm(normal)  # Normalize
+        return Lens({
+            'center': center, 
+            'normal': normal, 
+            'radius': radius, 
+            'focal_distance': focal_distance
+        })
 
-    def get_new_rays(self, hitting_rays: np.ndarray, hit_points: np.ndarray) -> np.ndarray:
+    def get_new_rays(self, hitting_rays: torch.Tensor, hit_points: torch.Tensor) -> torch.Tensor:
         """
         Calculate new ray directions after refraction through the lens.
         
         Args:
-            hitting_rays: Array of incoming rays (ray_dtype)
+            hitting_rays: Array of incoming rays
             hit_points: Array of hit points on lens surface (Nx3)
             
         Returns:
-            Array of refracted rays (ray_dtype)
+            Array of refracted rays
         """
         # Working based on this idea:
         # - parallel rays meet at the focal distance
@@ -68,11 +59,11 @@ class Lens:
         # - the rest is just getting the vector from hit_point to the point where the original ray would hit the focal plane, adding the self.center - hit_point vector, and we have the new direction
         # - then we need to normalize it
         # - we also swap for cases when the normal is in the direction of the ray origin
-        normal_away_from_origin = np.matvec(hitting_rays['direction'], self.normal) > 0
-        scale = self.focal_distance / np.matvec(hitting_rays['direction'], self.normal)
-        new_directions = hitting_rays['direction'] * scale[:, np.newaxis] + (self.center - hit_points)
+        normal_away_from_origin = torch.matmul(hitting_rays['direction'], self.normal) > 0
+        scale = self.focal_distance / torch.matmul(hitting_rays['direction'], self.normal)
+        new_directions = hitting_rays['direction'] * scale[:, torch.newaxis] + (self.center - hit_points)
         # The issue arises here
-        new_directions = new_directions / np.linalg.norm(new_directions, axis=1, keepdims=True)
+        new_directions = new_directions / torch.linalg.norm(new_directions, axis=1, keepdims=True)
         new_directions[~normal_away_from_origin] *= -1
         if self.focal_distance < 0:
             new_directions *= -1

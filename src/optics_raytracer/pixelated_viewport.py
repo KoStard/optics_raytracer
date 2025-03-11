@@ -1,22 +1,12 @@
-import numpy as np
-from .primitives import vector_dtype
-
-pixelated_viewport_dtype = np.dtype([
-    ('middle_point', *vector_dtype),
-    ('normal', *vector_dtype),
-    ('width', np.float32),
-    ('height', np.float32),
-    ('u_vector', *vector_dtype),
-    ('pixel_columns', np.int64),
-    ('pixel_rows', np.int64),
-])
+import torch
+from .torch_details import device
 
 def build_pixelated_viewport(
-    middle_point: np.ndarray,
-    normal: np.ndarray,
+    middle_point: torch.Tensor,
+    normal: torch.Tensor,
     width: float,
     height: float,
-    u_vector: np.ndarray,
+    u_vector: torch.Tensor,
     pixel_columns: int,
     pixel_rows: int
 ):
@@ -35,29 +25,34 @@ def build_pixelated_viewport(
     Returns:
         Numpy structured array representing the pixelated viewport
     """
-    normal = normal / np.linalg.norm(normal)  # Normalize
-    return np.array(
-        (middle_point, normal, width, height, u_vector, pixel_columns, pixel_rows),
-        dtype=pixelated_viewport_dtype
-    )
+    normal = normal / torch.linalg.norm(normal)  # Normalize
+    return {
+        'middle_point': middle_point, 
+        'normal': normal, 
+        'width': width, 
+        'height': height, 
+        'u_vector': u_vector, 
+        'pixel_columns': pixel_columns, 
+        'pixel_rows': pixel_rows
+    }
 
 def get_pixel_points(pixelated_viewport):
     """
     Returns height x width matrix of points, where each point is a pixel center.
     """
-    u = pixelated_viewport['u_vector'][:, np.newaxis]
-    v = np.cross(pixelated_viewport['normal'], pixelated_viewport['u_vector'])[:, np.newaxis]
+    u = pixelated_viewport['u_vector'][:, torch.newaxis]
+    v = torch.cross(pixelated_viewport['normal'], pixelated_viewport['u_vector'])[:, torch.newaxis]
 
     u_step = pixelated_viewport['width'] / (pixelated_viewport['pixel_columns'] - 1) * u
     v_step = pixelated_viewport['height'] / (pixelated_viewport['pixel_rows'] - 1) * v
 
-    u_steps = (np.arange(pixelated_viewport['pixel_columns']) * u_step)
-    v_steps = (np.arange(pixelated_viewport['pixel_rows']) * v_step)
+    u_steps = (torch.arange(pixelated_viewport['pixel_columns']).to(device) * u_step)
+    v_steps = (torch.arange(pixelated_viewport['pixel_rows']).to(device) * v_step)
 
     u_steps = u_steps - u_step * (pixelated_viewport['pixel_columns'] - 1) / 2
     v_steps = v_steps - v_step * (pixelated_viewport['pixel_rows'] - 1) / 2
     
-    x = np.tile(u_steps.T, (pixelated_viewport['pixel_rows'], 1, 1))
-    y = np.tile(v_steps.T[:, np.newaxis], (1, pixelated_viewport['pixel_columns'], 1))
+    x = torch.tile(u_steps.T, (pixelated_viewport['pixel_rows'], 1, 1))
+    y = torch.tile(v_steps.T[:, torch.newaxis], (1, pixelated_viewport['pixel_columns'], 1))
     
-    return pixelated_viewport['middle_point'][np.newaxis, np.newaxis, :] + x + y
+    return pixelated_viewport['middle_point'][torch.newaxis, torch.newaxis, :] + x + y

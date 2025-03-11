@@ -1,14 +1,15 @@
-import numpy as np
+import torch
 from typing import List
 
 from optics_raytracer.circle import Circle, ColoredCircle
 from optics_raytracer.inserted_image import InsertedImage
 from optics_raytracer.rectangle import ColoredRectangle
-from .ray import get_ray_points_array_at_t_array, ray_dtype
+from .ray import get_ray_points_array_at_t_array, apply_mask_on_rays
 from .colored_object import ColoredObject
 from .lens import Lens
 from .surface import get_surface_hit_ts, get_surface_hit_ts_mask
 from .export_3d import Exporter3D
+from .torch_details import device
 
 class ColorTracer:
     """
@@ -19,8 +20,8 @@ class ColorTracer:
         exporter: Exporter3D,
         colored_objects: List[ColoredObject],
         lenses: List[Lens],
-        default_color: np.ndarray = np.array([0, 0, 0], dtype=np.float16),
-        ray_sampling_rate_for_3d_export: np.float32 = np.float32(0.01)
+        default_color: torch.Tensor = None,
+        ray_sampling_rate_for_3d_export = None
     ):
         """
         Initialize the color tracer.
@@ -31,6 +32,10 @@ class ColorTracer:
             lenses: List of lenses in the scene
             default_color: Default color for rays that don't hit anything
         """
+        if default_color is None:
+            default_color = torch.tensor([0.0, 0.0, 0.0], dtype=torch.float32)
+        if ray_sampling_rate_for_3d_export is None:
+            ray_sampling_rate_for_3d_export = torch.float32(0.01)
         self.exporter = exporter
         self.colored_objects = colored_objects
         self.lenses = lenses
@@ -39,36 +44,36 @@ class ColorTracer:
         
         for obj in colored_objects:
             if isinstance(obj, ColoredCircle):
-                self.exporter.add_circle(obj.circle.array, 50)
+                self.exporter.add_circle(obj.circle.circle_data, 50)
             elif isinstance(obj, ColoredRectangle):
-                self.exporter.add_rectangle(obj.rectangle.array)
+                self.exporter.add_rectangle(obj.rectangle.rectangle_data)
             elif isinstance(obj, InsertedImage):
-                self.exporter.add_rectangle(obj.rectangle.array)
+                self.exporter.add_rectangle(obj.rectangle.rectangle_data)
             else:
                 print(f"Unknown object type: {type(obj)}")
         
         for lens in lenses:
-            self.exporter.add_circle(lens.array, 50)
+            self.exporter.add_circle(lens.lens_data, 50)
 
-    def get_colors(self, rays: np.ndarray, depth=None) -> np.ndarray:
+    def get_colors(self, rays: torch.Tensor, depth=None) -> torch.Tensor:
         """
         Get colors for an array of rays by tracing them through the scene.
         
         Args:
-            rays: Array of rays to trace (ray_dtype)
+            rays: Array of rays to trace
             
         Returns:
             Array of colors (Nx3) in RGB format with values between 0 and 1
         """
         # Initialize output colors with default
-        colors = np.tile(self.default_color, (len(rays), 1))
+        colors = torch.tile(self.default_color, (len(rays['origin']), 1)).to(device)
         
         # Find closest hits for all objects
-        closest_hit_ts = np.full(len(rays), np.inf, dtype=np.float32)
-        any_object_hit_mask = np.zeros(len(rays), dtype=bool)
-        ray_hits_any_lens_mask = np.zeros(len(rays), dtype=bool)
-        ray_hitting_object_indices_array = np.full(len(rays), -1)
-        hit_lens_indices_by_rays_order = np.full(len(rays), -1)
+        closest_hit_ts = torch.full((len(rays['origin']), ), torch.inf, dtype=torch.float32).to(device)
+        any_object_hit_mask = torch.zeros(len(rays['origin']), dtype=bool).to(device)
+        ray_hits_any_lens_mask = torch.zeros(len(rays['origin']), dtype=bool).to(device)
+        ray_hitting_object_indices_array = torch.full((len(rays['origin']), ), -1).to(device)
+        hit_lens_indices_by_rays_order = torch.full((len(rays['origin']), ), -1).to(device)
         
         # Check colored objects
         for obj_index, lens in enumerate(self.colored_objects):
@@ -80,7 +85,7 @@ class ColorTracer:
                 obj_ts = get_surface_hit_ts(rays, surface_point, surface_normal)
                 obj_points = get_ray_points_array_at_t_array(rays, obj_ts)
                 obj_mask = get_surface_hit_ts_mask(obj_ts)
-                obj_mask &= lens.rectangle.get_hits_mask(lens.rectangle.array, obj_points)
+                obj_mask &= lens.rectangle.get_hits_mask(lens.rectangle.rectangle_data, obj_points)
                 
             elif isinstance(lens, ColoredCircle):
                 surface_point = lens.circle.center
@@ -90,7 +95,7 @@ class ColorTracer:
                 obj_ts = get_surface_hit_ts(rays, surface_point, surface_normal)
                 obj_points = get_ray_points_array_at_t_array(rays, obj_ts)
                 obj_mask = get_surface_hit_ts_mask(obj_ts)
-                obj_mask &= lens.circle.get_hits_mask(lens.circle.array, obj_points)
+                obj_mask &= lens.circle.get_hits_mask(lens.circle.circle_data, obj_points)
             else:
                 print(f"Unknown object type: {type(lens)}")
                 continue
@@ -106,7 +111,7 @@ class ColorTracer:
         for lens_index, lens in enumerate(self.lenses):
             lens_ts = get_surface_hit_ts(rays, lens.center, lens.normal)
             current_lens_hit_mask = get_surface_hit_ts_mask(lens_ts)
-            current_lens_hit_mask[current_lens_hit_mask] &= Circle.get_hits_mask(lens.array, get_ray_points_array_at_t_array(rays[current_lens_hit_mask], lens_ts[current_lens_hit_mask]))
+            current_lens_hit_mask[current_lens_hit_mask] &= Circle.get_hits_mask(lens.lens_data, get_ray_points_array_at_t_array(apply_mask_on_rays(rays, current_lens_hit_mask), lens_ts[current_lens_hit_mask]))
             
             ray_hits_any_lens_mask[current_lens_hit_mask] = True
             
@@ -121,51 +126,51 @@ class ColorTracer:
             ray_hits_any_lens_mask[update_mask] = True
         
         # Getting lens hit colors
-        if np.any(ray_hits_any_lens_mask):
-            # ray_hits_any_lens_mask has shape of (len(rays), )
-            # So lens_hit_points is as big as np.where(ray_hits_any_lens_mask)
-            lens_hit_points = get_ray_points_array_at_t_array(rays[ray_hits_any_lens_mask], closest_hit_ts[ray_hits_any_lens_mask])
+        if torch.any(ray_hits_any_lens_mask):
+            # ray_hits_any_lens_mask has shape of (len(rays['origin']), )
+            # So lens_hit_points is as big as torch.where(ray_hits_any_lens_mask)
+            lens_hit_points = get_ray_points_array_at_t_array(apply_mask_on_rays(rays, ray_hits_any_lens_mask), closest_hit_ts[ray_hits_any_lens_mask])
             
             # Get the the possible lens indices
-            lens_indices = np.arange(len(self.lenses))
+            lens_indices = torch.arange(len(self.lenses))
 
             # Create a dictionary of masks, where each mask shows the positions of the corresponding value.
-            # Each mask has shape of ray_hitting_lens_indices_array, which has shape of (len(rays), )
+            # Each mask has shape of ray_hitting_lens_indices_array, which has shape of (len(rays['origin']), )
             masks_by_lens_index = {current_lens_index: (hit_lens_indices_by_rays_order == current_lens_index) for current_lens_index in lens_indices}
             
             for current_lens_index, current_lens_hitting_rays_mask in masks_by_lens_index.items():
-                if np.any(current_lens_hitting_rays_mask):
+                if torch.any(current_lens_hitting_rays_mask):
                     lens = self.lenses[current_lens_index]
-                    new_rays = lens.get_new_rays(rays[current_lens_hitting_rays_mask], lens_hit_points[current_lens_hitting_rays_mask[ray_hits_any_lens_mask]])
+                    new_rays = lens.get_new_rays(apply_mask_on_rays(rays, current_lens_hitting_rays_mask), lens_hit_points[current_lens_hitting_rays_mask[ray_hits_any_lens_mask]])
                     # TODO: Optimization opportunity, collect all rays together and call get_colors once
                     colors[current_lens_hitting_rays_mask] = self.get_colors(new_rays, depth=depth+1 if depth else 1)
             
             # Save visualization of hit rays
-            self._save_hit_rays(rays[ray_hits_any_lens_mask], lens_hit_points, depth=depth)
+            self._save_hit_rays(apply_mask_on_rays(rays, ray_hits_any_lens_mask), lens_hit_points, depth=depth)
                 
         # Get colors for non-lens hits
-        if np.any(any_object_hit_mask):
-            lens_hit_points = get_ray_points_array_at_t_array(rays[any_object_hit_mask], closest_hit_ts[any_object_hit_mask])
+        if torch.any(any_object_hit_mask):
+            lens_hit_points = get_ray_points_array_at_t_array(apply_mask_on_rays(rays, any_object_hit_mask), closest_hit_ts[any_object_hit_mask])
             
             # Get the unique values.
-            lens_indices = np.arange(len(self.colored_objects))
+            lens_indices = torch.arange(len(self.colored_objects))
 
             # Create a dictionary of masks, where each mask shows the positions of the corresponding value.
             masks_by_lens_index = {val: (ray_hitting_object_indices_array == val) for val in lens_indices}
             
             for hit_object_index, hit_object_mask in masks_by_lens_index.items():
-                if np.any(hit_object_mask):
+                if torch.any(hit_object_mask):
                     # Get colors from objects
                     lens = self.colored_objects[hit_object_index]
                     colors[hit_object_mask] = lens.get_colors(lens_hit_points[hit_object_mask[any_object_hit_mask]])
             
             # Save visualization of hit rays
-            self._save_hit_rays(rays[any_object_hit_mask], lens_hit_points, depth=depth)
+            self._save_hit_rays(apply_mask_on_rays(rays, any_object_hit_mask), lens_hit_points, depth=depth)
         
         # Save visualization of missed rays
         missed_mask = ~(any_object_hit_mask | ray_hits_any_lens_mask)
-        if np.any(missed_mask):
-            self._save_missed_rays(rays[missed_mask])
+        if torch.any(missed_mask):
+            self._save_missed_rays(apply_mask_on_rays(rays, missed_mask))
         
         return colors
 
@@ -174,15 +179,15 @@ class ColorTracer:
         Save visualization of rays that hit objects.
         
         Args:
-            rays: Array of rays that hit objects (ray_dtype)
+            rays: Array of rays that hit objects
             points: Array of hit points (Nx3)
         """
         # Save visualization of hit rays
-        tracing_mask = self._get_random_tracing_mask(len(rays))
+        tracing_mask = self._get_random_tracing_mask(len(rays['origin']))
         rays_group = "rays"
         if depth:
             rays_group += f"/{depth}_depth"
-        for ray, point in zip(rays[tracing_mask], points[tracing_mask]):
+        for ray, point in zip(apply_mask_on_rays(rays, tracing_mask), points[tracing_mask]):
             self.exporter.add_line(ray['origin'], point, group=rays_group)
             self.exporter.add_point(point, group="hits")
 
@@ -191,14 +196,14 @@ class ColorTracer:
         Save visualization of rays that missed all objects.
         
         Args:
-            rays: Array of rays that missed (ray_dtype)
+            rays: Array of rays that missed
             max_length: Length to draw missed rays
         """
         # Save visualization of hit rays
-        tracing_mask = self._get_random_tracing_mask(len(rays))
-        for ray in rays[tracing_mask]:
+        tracing_mask = self._get_random_tracing_mask(len(rays['origin']))
+        for ray in apply_mask_on_rays(rays, tracing_mask):
             end_point = ray['origin'] + ray['direction'] * max_length
             self.exporter.add_line(ray['origin'], end_point, group="rays/missed")
 
     def _get_random_tracing_mask(self, l):
-        return np.random.rand(l) <= self.ray_sampling_rate_for_3d_export
+        return torch.rand(l) <= self.ray_sampling_rate_for_3d_export

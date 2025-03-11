@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-import numpy as np
+import torch
 
 class ColoredObject(ABC):
     """
     Abstract base class for objects that can return colors for given points.
     """
     @abstractmethod
-    def get_colors(self, points: np.ndarray) -> np.ndarray:
+    def get_colors(self, points: torch.Tensor) -> torch.Tensor:
         """
         Get colors for an array of points on its surface.
         

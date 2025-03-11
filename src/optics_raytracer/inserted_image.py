@@ -1,4 +1,5 @@
-import numpy as np
+import torch
+from .torch_details import device
 from PIL import Image
 from .colored_object import ColoredObject
 from .rectangle import Rectangle
@@ -12,9 +13,9 @@ class InsertedImage(ColoredObject):
         image_path: str, 
         width: float, 
         height: float,
-        middle_point: np.ndarray,
-        normal: np.ndarray,
-        u_vector: np.ndarray
+        middle_point: torch.Tensor,
+        normal: torch.Tensor,
+        u_vector: torch.Tensor
     ):
         """
         Create a new InsertedImage.
@@ -41,7 +42,7 @@ class InsertedImage(ColoredObject):
             u_vector=u_vector
         )
 
-    def get_colors(self, points: np.ndarray) -> np.ndarray:
+    def get_colors(self, points: torch.Tensor) -> torch.Tensor:
         """
         Get colors for an array of points on its surface (assumes they are on the surface).
         
@@ -53,7 +54,7 @@ class InsertedImage(ColoredObject):
             Points that don't hit the image will have color [0,0,0]
         """
         # Create empty array of black colors
-        colors = np.zeros_like(points)
+        colors = torch.zeros_like(points)
 
         # Get vectors from center to points
         center_to_points = points - self.rectangle.middle_point
@@ -61,22 +62,23 @@ class InsertedImage(ColoredObject):
         # Get u and v components
         u = self.rectangle.u_vector
         # Making negative, as y in image is supposed to be pointing "down"
-        v = -np.cross(self.rectangle.normal, u)
+        v = -torch.cross(self.rectangle.normal, u)
         
-        u = u / np.linalg.norm(u)
-        v = v / np.linalg.norm(v)
+        u = u / torch.linalg.norm(u)
+        v = v / torch.linalg.norm(v)
         
         # Calculate image coordinates (0-1 range)
-        u_coords = np.dot(center_to_points, u) / self.width + 0.5
-        v_coords = np.dot(center_to_points, v) / self.height + 0.5
+        # TODO: Check if this is correct
+        u_coords = torch.matmul(center_to_points, u.T) / self.width + 0.5
+        v_coords = torch.matmul(center_to_points, v.T) / self.height + 0.5
         
         # Convert to pixel coordinates
         img_width, img_height = self.image.size
-        x = np.clip((u_coords * img_width).astype(int), 0, img_width - 1)
-        y = np.clip((v_coords * img_height).astype(int), 0, img_height - 1)
+        x = torch.clip((u_coords * img_width).to(torch.int), 0, img_width - 1)
+        y = torch.clip((v_coords * img_height).to(torch.int), 0, img_height - 1)
         
         # Get colors from image
         for i, (xi, yi) in enumerate(zip(x, y)):
-            colors[i] = np.array(self.image.getpixel((xi, yi))) / 255.0
+            colors[i] = torch.tensor(self.image.getpixel((xi, yi))).to(device) / 255.0
                 
         return colors
