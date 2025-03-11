@@ -41,7 +41,7 @@ def get_pixel_points(pixelated_viewport):
     Returns height x width matrix of points, where each point is a pixel center.
     """
     u = pixelated_viewport['u_vector'][:, torch.newaxis]
-    v = torch.cross(pixelated_viewport['normal'], pixelated_viewport['u_vector'])[:, torch.newaxis]
+    v = torch.linalg.cross(pixelated_viewport['normal'], pixelated_viewport['u_vector'])[:, torch.newaxis]
 
     u_step = pixelated_viewport['width'] / (pixelated_viewport['pixel_columns'] - 1) * u
     v_step = pixelated_viewport['height'] / (pixelated_viewport['pixel_rows'] - 1) * v

@@ -73,7 +73,7 @@ class Rectangle:
 
         # Get u and v projections
         u = rectangle_array['u_vector'][:, torch.newaxis]
-        v = torch.cross(rectangle_array['normal'], rectangle_array['u_vector'])[:, torch.newaxis]
+        v = torch.linalg.cross(rectangle_array['normal'], rectangle_array['u_vector'])[:, torch.newaxis]
         u_projection_vectors = torch.matmul(torch.matmul(u, u.T) / torch.matmul(u.T, u), middle_to_point_vector_array.T).T
         v_projection_vectors = torch.matmul(torch.matmul(v, v.T) / torch.matmul(v.T, v), middle_to_point_vector_array.T).T
 

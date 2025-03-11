@@ -35,9 +35,9 @@ class Exporter3D:
             arbitrary = torch.tensor([1, 0, 0], dtype=torch.float32).to(device)
         else:
             arbitrary = torch.tensor([0, 1, 0], dtype=torch.float32).to(device)
-        tangent = torch.cross(normal, arbitrary)
+        tangent = torch.linalg.cross(normal, arbitrary)
         tangent /= torch.linalg.norm(tangent)
-        binormal = torch.cross(normal, tangent)
+        binormal = torch.linalg.cross(normal, tangent)
         
         # Generate circle points
         angles = torch.linspace(0, 2 * math.pi, resolution).to(device)
@@ -59,7 +59,7 @@ class Exporter3D:
     def add_rectangle(self, rectangle: torch.Tensor):
         center = rectangle['middle_point']
         u = rectangle['u_vector']
-        v = torch.cross(rectangle['normal'], u)
+        v = torch.linalg.cross(rectangle['normal'], u)
         width = rectangle['width']
         height = rectangle['height']
         

@@ -62,15 +62,15 @@ class InsertedImage(ColoredObject):
         # Get u and v components
         u = self.rectangle.u_vector
         # Making negative, as y in image is supposed to be pointing "down"
-        v = -torch.cross(self.rectangle.normal, u)
+        v = -torch.linalg.cross(self.rectangle.normal, u)
         
         u = u / torch.linalg.norm(u)
         v = v / torch.linalg.norm(v)
         
         # Calculate image coordinates (0-1 range)
         # TODO: Check if this is correct
-        u_coords = torch.matmul(center_to_points, u.T) / self.width + 0.5
-        v_coords = torch.matmul(center_to_points, v.T) / self.height + 0.5
+        u_coords = torch.matmul(center_to_points, u.reshape(-1, 1)) / self.width + 0.5
+        v_coords = torch.matmul(center_to_points, v.reshape(-1, 1)) / self.height + 0.5
         
         # Convert to pixel coordinates
         img_width, img_height = self.image.size

@@ -107,7 +107,7 @@ class SimpleCamera(Camera):
         
         # Build rays
         rays = build_rays(
-            torch.full_like(directions, self.camera_center).to(device),
+            self.camera_center.tile(len(directions), 1),
             directions
         )
         
@@ -255,7 +255,7 @@ class EyeCamera(Camera):
             
             # Transform points to lens plane
             u = self.camera_data['u_vector']
-            v = torch.cross(self.camera_data['normal'], u)
+            v = torch.linalg.cross(self.camera_data['normal'], u)
             transform = torch.column_stack([u, v, self.camera_data['normal']])
             circle_points = lens_center + torch.matmul(circle_points, transform.T)
             

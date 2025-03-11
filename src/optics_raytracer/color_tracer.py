@@ -111,7 +111,7 @@ class ColorTracer:
         for lens_index, lens in enumerate(self.lenses):
             lens_ts = get_surface_hit_ts(rays, lens.center, lens.normal)
             current_lens_hit_mask = get_surface_hit_ts_mask(lens_ts)
-            current_lens_hit_mask[current_lens_hit_mask] &= Circle.get_hits_mask(lens.lens_data, get_ray_points_array_at_t_array(apply_mask_on_rays(rays, current_lens_hit_mask), lens_ts[current_lens_hit_mask]))
+            current_lens_hit_mask[current_lens_hit_mask.clone()] &= Circle.get_hits_mask(lens.lens_data, get_ray_points_array_at_t_array(apply_mask_on_rays(rays, current_lens_hit_mask), lens_ts[current_lens_hit_mask]))
             
             ray_hits_any_lens_mask[current_lens_hit_mask] = True
             
@@ -187,8 +187,8 @@ class ColorTracer:
         rays_group = "rays"
         if depth:
             rays_group += f"/{depth}_depth"
-        for ray, point in zip(apply_mask_on_rays(rays, tracing_mask), points[tracing_mask]):
-            self.exporter.add_line(ray['origin'], point, group=rays_group)
+        for origin, point in zip(apply_mask_on_rays(rays, tracing_mask)['origin'], points[tracing_mask]):
+            self.exporter.add_line(origin, point, group=rays_group)
             self.exporter.add_point(point, group="hits")
 
     def _save_missed_rays(self, rays, max_length=1000):
@@ -201,9 +201,10 @@ class ColorTracer:
         """
         # Save visualization of hit rays
         tracing_mask = self._get_random_tracing_mask(len(rays['origin']))
-        for ray in apply_mask_on_rays(rays, tracing_mask):
-            end_point = ray['origin'] + ray['direction'] * max_length
-            self.exporter.add_line(ray['origin'], end_point, group="rays/missed")
+        rays_with_tracing_mask = apply_mask_on_rays(rays, tracing_mask)
+        for origin, direction in zip(rays_with_tracing_mask['origin'], rays_with_tracing_mask['direction']):
+            end_point = origin + direction * max_length
+            self.exporter.add_line(origin, end_point, group="rays/missed")
 
     def _get_random_tracing_mask(self, l):
         return torch.rand(l) <= self.ray_sampling_rate_for_3d_export

@@ -8,6 +8,8 @@ def get_ray_points_array_at_t_array(rays, t_array):
 
 def build_rays(origins, directions):
     if origins.shape != directions.shape:
+        print(origins.shape)
+        print(directions.shape)
         raise ValueError("Origins and directions arrays must have the same shape.")
 
     rays = {}
