@@ -9,7 +9,7 @@ class ImageSaver:
         self.image = None
     
     def write_pixels(self, pixel_colors: torch.Tensor):
-        self.pixels = pixel_colors.numpy().astype('uint8')
+        self.pixels = pixel_colors.cpu().numpy().astype('uint8')
 
     def save(self, filename: str):
         # Save image with format determined by extension
