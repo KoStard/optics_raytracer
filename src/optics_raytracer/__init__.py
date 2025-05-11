@@ -1,4 +1,5 @@
 from .primitives import vector_dtype, color_dtype, point_dtype
+from .ray_group_namer import RayGroupNamer
 from .ray import (
     ray_dtype,
     get_ray_point_at_t,
@@ -66,4 +67,5 @@ __all__ = [
     "get_pixel_points",
     "IntegerSize",
     "FloatSize",
+    "RayGroupNamer",
 ]

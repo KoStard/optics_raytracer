@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from .ray_group_namer import RayGroupNamer
 
 
 class Exporter3D:
@@ -82,22 +83,56 @@ class Exporter3D:
     def save_to_obj(self, output_path: str, output_mtl_path: str):
         # Define materials with colors and transparency
         rays_color = (1, 0, 0, 0.1)  # red, opaque
+        
+        # Generate distinct colors for different object/lens hits
+        def generate_color(index, obj_type='lens'):
+            # Simple pastel color generation with lower intensity
+            # Use a different base hue for lenses vs objects
+            base_r, base_g, base_b = (0.2, 0.3, 0.7) if obj_type == 'lens' else (0.7, 0.5, 0.2)
+            
+            # Vary the colors slightly based on index
+            r = (base_r + index * 0.05) % 0.7
+            g = (base_g + index * 0.07) % 0.7
+            b = (base_b + index * 0.06) % 0.7
+            
+            # Lower alpha for less visual clutter
+            alpha = 0.2
+            
+            return (r, g, b, alpha)
+        
         materials = {
-            "rays": rays_color,
-            "rays/missed": (0.1, 0.1, 0.1, 0.1),
-            "rays/1_depth": rays_color,
-            "rays/2_depth": rays_color,
-            "rays/3_depth": rays_color,
-            "rays/4_depth": rays_color,
-            "rays/5_depth": rays_color,
-            "rays/6_depth": rays_color,
-            "rays/7_depth": rays_color,
-            "rays/8_depth": rays_color,
-            "rays/9_depth": rays_color,
-            "circles": (0, 0, 1, 0.5),  # blue, semi-transparent
-            "rectangles": (0, 1, 0, 0.5),  # green, semi-transparent
-            "hits": (0, 0, 0, 1),  # black, opaque
+            "primary_rays": rays_color,
+            "missed_rays": (0.1, 0.1, 0.1, 0.1),
+            "lens_outlines": (0, 0.4, 0.8, 0.5),  # blue, semi-transparent
+            "screen_outlines": (0, 0.6, 0.2, 0.5),  # green, semi-transparent
+            "hit_points": (0, 0, 0, 1),  # black, opaque
         }
+        
+        # Add basic refraction depth materials
+        for depth in range(1, 10):
+            ordinal = RayGroupNamer.get_ordinal(depth)
+            materials[f"{ordinal}_refraction"] = rays_color
+        
+        # Add materials for each lens and object dynamically
+        # We don't know how many there will be, so we'll create materials for a reasonable number
+        for hit_object_index in range(20):
+            # Lens ray materials
+            # Use the RayGroupNamer to generate consistent group names
+            
+            lens_color = generate_color(hit_object_index, 'lens')
+            materials[RayGroupNamer.get_ray_group_name(None, "lens", hit_object_index)] = lens_color
+            materials[RayGroupNamer.get_ray_group_name(1, "lens", hit_object_index)] = lens_color
+            materials[RayGroupNamer.get_ray_group_name(2, "lens", hit_object_index)] = lens_color
+            materials[RayGroupNamer.get_ray_group_name(3, "lens", hit_object_index)] = lens_color
+            materials[RayGroupNamer.get_hit_point_group_name("lens", hit_object_index)] = lens_color
+            
+            # Object ray materials
+            obj_color = generate_color(hit_object_index, 'object')
+            materials[RayGroupNamer.get_ray_group_name(None, "object", hit_object_index)] = obj_color
+            materials[RayGroupNamer.get_ray_group_name(1, "object", hit_object_index)] = obj_color
+            materials[RayGroupNamer.get_ray_group_name(2, "object", hit_object_index)] = obj_color
+            materials[RayGroupNamer.get_ray_group_name(3, "object", hit_object_index)] = obj_color
+            materials[RayGroupNamer.get_hit_point_group_name("object", hit_object_index)] = obj_color
 
         # Create MTL file
         with open(output_mtl_path, "w") as mtl_file:

@@ -1,56 +1,856 @@
-newmtl rays
+newmtl primary_rays
 Kd 1 0 0
 d 0.1
 
-newmtl rays/missed
+newmtl missed_rays
 Kd 0.1 0.1 0.1
 d 0.1
 
-newmtl rays/1_depth
+newmtl 1st_refraction
 Kd 1 0 0
 d 0.1
 
-newmtl rays/2_depth
+newmtl 2nd_refraction
 Kd 1 0 0
 d 0.1
 
-newmtl rays/3_depth
+newmtl 3rd_refraction
 Kd 1 0 0
 d 0.1
 
-newmtl rays/4_depth
+newmtl 4th_refraction
 Kd 1 0 0
 d 0.1
 
-newmtl rays/5_depth
+newmtl 5th_refraction
 Kd 1 0 0
 d 0.1
 
-newmtl rays/6_depth
+newmtl 6th_refraction
 Kd 1 0 0
 d 0.1
 
-newmtl rays/7_depth
+newmtl 7th_refraction
 Kd 1 0 0
 d 0.1
 
-newmtl rays/8_depth
+newmtl 8th_refraction
 Kd 1 0 0
 d 0.1
 
-newmtl rays/9_depth
+newmtl 9th_refraction
 Kd 1 0 0
 d 0.1
 
-newmtl circles
-Kd 0 0 1
+newmtl lens_outlines
+Kd 0 0.4 0.8
 d 0.5
 
-newmtl rectangles
-Kd 0 1 0
+newmtl screen_outlines
+Kd 0 0.6 0.2
 d 0.5
 
-newmtl hits
+newmtl hit_points
 Kd 0 0 0
 d 1
+
+newmtl primary_rays_through_lens_0
+Kd 0.2 0.3 0.0
+d 0.2
+
+newmtl 1st_refraction_through_lens_0
+Kd 0.2 0.3 0.0
+d 0.2
+
+newmtl 2nd_refraction_through_lens_0
+Kd 0.2 0.3 0.0
+d 0.2
+
+newmtl 3rd_refraction_through_lens_0
+Kd 0.2 0.3 0.0
+d 0.2
+
+newmtl hit_points_at_lens_0
+Kd 0.2 0.3 0.0
+d 0.2
+
+newmtl primary_rays_at_object_0
+Kd 0.0 0.5 0.2
+d 0.2
+
+newmtl 1st_refraction_at_object_0
+Kd 0.0 0.5 0.2
+d 0.2
+
+newmtl 2nd_refraction_at_object_0
+Kd 0.0 0.5 0.2
+d 0.2
+
+newmtl 3rd_refraction_at_object_0
+Kd 0.0 0.5 0.2
+d 0.2
+
+newmtl hit_points_at_object_0
+Kd 0.0 0.5 0.2
+d 0.2
+
+newmtl primary_rays_through_lens_1
+Kd 0.25 0.37 0.06000000000000005
+d 0.2
+
+newmtl 1st_refraction_through_lens_1
+Kd 0.25 0.37 0.06000000000000005
+d 0.2
+
+newmtl 2nd_refraction_through_lens_1
+Kd 0.25 0.37 0.06000000000000005
+d 0.2
+
+newmtl 3rd_refraction_through_lens_1
+Kd 0.25 0.37 0.06000000000000005
+d 0.2
+
+newmtl hit_points_at_lens_1
+Kd 0.25 0.37 0.06000000000000005
+d 0.2
+
+newmtl primary_rays_at_object_1
+Kd 0.050000000000000044 0.5700000000000001 0.26
+d 0.2
+
+newmtl 1st_refraction_at_object_1
+Kd 0.050000000000000044 0.5700000000000001 0.26
+d 0.2
+
+newmtl 2nd_refraction_at_object_1
+Kd 0.050000000000000044 0.5700000000000001 0.26
+d 0.2
+
+newmtl 3rd_refraction_at_object_1
+Kd 0.050000000000000044 0.5700000000000001 0.26
+d 0.2
+
+newmtl hit_points_at_object_1
+Kd 0.050000000000000044 0.5700000000000001 0.26
+d 0.2
+
+newmtl primary_rays_through_lens_2
+Kd 0.30000000000000004 0.44 0.12
+d 0.2
+
+newmtl 1st_refraction_through_lens_2
+Kd 0.30000000000000004 0.44 0.12
+d 0.2
+
+newmtl 2nd_refraction_through_lens_2
+Kd 0.30000000000000004 0.44 0.12
+d 0.2
+
+newmtl 3rd_refraction_through_lens_2
+Kd 0.30000000000000004 0.44 0.12
+d 0.2
+
+newmtl hit_points_at_lens_2
+Kd 0.30000000000000004 0.44 0.12
+d 0.2
+
+newmtl primary_rays_at_object_2
+Kd 0.09999999999999998 0.64 0.32
+d 0.2
+
+newmtl 1st_refraction_at_object_2
+Kd 0.09999999999999998 0.64 0.32
+d 0.2
+
+newmtl 2nd_refraction_at_object_2
+Kd 0.09999999999999998 0.64 0.32
+d 0.2
+
+newmtl 3rd_refraction_at_object_2
+Kd 0.09999999999999998 0.64 0.32
+d 0.2
+
+newmtl hit_points_at_object_2
+Kd 0.09999999999999998 0.64 0.32
+d 0.2
+
+newmtl primary_rays_through_lens_3
+Kd 0.35000000000000003 0.51 0.17999999999999994
+d 0.2
+
+newmtl 1st_refraction_through_lens_3
+Kd 0.35000000000000003 0.51 0.17999999999999994
+d 0.2
+
+newmtl 2nd_refraction_through_lens_3
+Kd 0.35000000000000003 0.51 0.17999999999999994
+d 0.2
+
+newmtl 3rd_refraction_through_lens_3
+Kd 0.35000000000000003 0.51 0.17999999999999994
+d 0.2
+
+newmtl hit_points_at_lens_3
+Kd 0.35000000000000003 0.51 0.17999999999999994
+d 0.2
+
+newmtl primary_rays_at_object_3
+Kd 0.15000000000000002 0.010000000000000009 0.38
+d 0.2
+
+newmtl 1st_refraction_at_object_3
+Kd 0.15000000000000002 0.010000000000000009 0.38
+d 0.2
+
+newmtl 2nd_refraction_at_object_3
+Kd 0.15000000000000002 0.010000000000000009 0.38
+d 0.2
+
+newmtl 3rd_refraction_at_object_3
+Kd 0.15000000000000002 0.010000000000000009 0.38
+d 0.2
+
+newmtl hit_points_at_object_3
+Kd 0.15000000000000002 0.010000000000000009 0.38
+d 0.2
+
+newmtl primary_rays_through_lens_4
+Kd 0.4 0.5800000000000001 0.24
+d 0.2
+
+newmtl 1st_refraction_through_lens_4
+Kd 0.4 0.5800000000000001 0.24
+d 0.2
+
+newmtl 2nd_refraction_through_lens_4
+Kd 0.4 0.5800000000000001 0.24
+d 0.2
+
+newmtl 3rd_refraction_through_lens_4
+Kd 0.4 0.5800000000000001 0.24
+d 0.2
+
+newmtl hit_points_at_lens_4
+Kd 0.4 0.5800000000000001 0.24
+d 0.2
+
+newmtl primary_rays_at_object_4
+Kd 0.19999999999999996 0.08000000000000007 0.44
+d 0.2
+
+newmtl 1st_refraction_at_object_4
+Kd 0.19999999999999996 0.08000000000000007 0.44
+d 0.2
+
+newmtl 2nd_refraction_at_object_4
+Kd 0.19999999999999996 0.08000000000000007 0.44
+d 0.2
+
+newmtl 3rd_refraction_at_object_4
+Kd 0.19999999999999996 0.08000000000000007 0.44
+d 0.2
+
+newmtl hit_points_at_object_4
+Kd 0.19999999999999996 0.08000000000000007 0.44
+d 0.2
+
+newmtl primary_rays_through_lens_5
+Kd 0.45 0.65 0.30000000000000004
+d 0.2
+
+newmtl 1st_refraction_through_lens_5
+Kd 0.45 0.65 0.30000000000000004
+d 0.2
+
+newmtl 2nd_refraction_through_lens_5
+Kd 0.45 0.65 0.30000000000000004
+d 0.2
+
+newmtl 3rd_refraction_through_lens_5
+Kd 0.45 0.65 0.30000000000000004
+d 0.2
+
+newmtl hit_points_at_lens_5
+Kd 0.45 0.65 0.30000000000000004
+d 0.2
+
+newmtl primary_rays_at_object_5
+Kd 0.25 0.15000000000000013 0.5
+d 0.2
+
+newmtl 1st_refraction_at_object_5
+Kd 0.25 0.15000000000000013 0.5
+d 0.2
+
+newmtl 2nd_refraction_at_object_5
+Kd 0.25 0.15000000000000013 0.5
+d 0.2
+
+newmtl 3rd_refraction_at_object_5
+Kd 0.25 0.15000000000000013 0.5
+d 0.2
+
+newmtl hit_points_at_object_5
+Kd 0.25 0.15000000000000013 0.5
+d 0.2
+
+newmtl primary_rays_through_lens_6
+Kd 0.5 0.020000000000000018 0.3600000000000001
+d 0.2
+
+newmtl 1st_refraction_through_lens_6
+Kd 0.5 0.020000000000000018 0.3600000000000001
+d 0.2
+
+newmtl 2nd_refraction_through_lens_6
+Kd 0.5 0.020000000000000018 0.3600000000000001
+d 0.2
+
+newmtl 3rd_refraction_through_lens_6
+Kd 0.5 0.020000000000000018 0.3600000000000001
+d 0.2
+
+newmtl hit_points_at_lens_6
+Kd 0.5 0.020000000000000018 0.3600000000000001
+d 0.2
+
+newmtl primary_rays_at_object_6
+Kd 0.30000000000000004 0.22000000000000008 0.56
+d 0.2
+
+newmtl 1st_refraction_at_object_6
+Kd 0.30000000000000004 0.22000000000000008 0.56
+d 0.2
+
+newmtl 2nd_refraction_at_object_6
+Kd 0.30000000000000004 0.22000000000000008 0.56
+d 0.2
+
+newmtl 3rd_refraction_at_object_6
+Kd 0.30000000000000004 0.22000000000000008 0.56
+d 0.2
+
+newmtl hit_points_at_object_6
+Kd 0.30000000000000004 0.22000000000000008 0.56
+d 0.2
+
+newmtl primary_rays_through_lens_7
+Kd 0.55 0.09000000000000008 0.41999999999999993
+d 0.2
+
+newmtl 1st_refraction_through_lens_7
+Kd 0.55 0.09000000000000008 0.41999999999999993
+d 0.2
+
+newmtl 2nd_refraction_through_lens_7
+Kd 0.55 0.09000000000000008 0.41999999999999993
+d 0.2
+
+newmtl 3rd_refraction_through_lens_7
+Kd 0.55 0.09000000000000008 0.41999999999999993
+d 0.2
+
+newmtl hit_points_at_lens_7
+Kd 0.55 0.09000000000000008 0.41999999999999993
+d 0.2
+
+newmtl primary_rays_at_object_7
+Kd 0.3500000000000001 0.29000000000000004 0.62
+d 0.2
+
+newmtl 1st_refraction_at_object_7
+Kd 0.3500000000000001 0.29000000000000004 0.62
+d 0.2
+
+newmtl 2nd_refraction_at_object_7
+Kd 0.3500000000000001 0.29000000000000004 0.62
+d 0.2
+
+newmtl 3rd_refraction_at_object_7
+Kd 0.3500000000000001 0.29000000000000004 0.62
+d 0.2
+
+newmtl hit_points_at_object_7
+Kd 0.3500000000000001 0.29000000000000004 0.62
+d 0.2
+
+newmtl primary_rays_through_lens_8
+Kd 0.6000000000000001 0.16000000000000014 0.48
+d 0.2
+
+newmtl 1st_refraction_through_lens_8
+Kd 0.6000000000000001 0.16000000000000014 0.48
+d 0.2
+
+newmtl 2nd_refraction_through_lens_8
+Kd 0.6000000000000001 0.16000000000000014 0.48
+d 0.2
+
+newmtl 3rd_refraction_through_lens_8
+Kd 0.6000000000000001 0.16000000000000014 0.48
+d 0.2
+
+newmtl hit_points_at_lens_8
+Kd 0.6000000000000001 0.16000000000000014 0.48
+d 0.2
+
+newmtl primary_rays_at_object_8
+Kd 0.40000000000000013 0.3600000000000001 0.6799999999999999
+d 0.2
+
+newmtl 1st_refraction_at_object_8
+Kd 0.40000000000000013 0.3600000000000001 0.6799999999999999
+d 0.2
+
+newmtl 2nd_refraction_at_object_8
+Kd 0.40000000000000013 0.3600000000000001 0.6799999999999999
+d 0.2
+
+newmtl 3rd_refraction_at_object_8
+Kd 0.40000000000000013 0.3600000000000001 0.6799999999999999
+d 0.2
+
+newmtl hit_points_at_object_8
+Kd 0.40000000000000013 0.3600000000000001 0.6799999999999999
+d 0.2
+
+newmtl primary_rays_through_lens_9
+Kd 0.65 0.2300000000000002 0.54
+d 0.2
+
+newmtl 1st_refraction_through_lens_9
+Kd 0.65 0.2300000000000002 0.54
+d 0.2
+
+newmtl 2nd_refraction_through_lens_9
+Kd 0.65 0.2300000000000002 0.54
+d 0.2
+
+newmtl 3rd_refraction_through_lens_9
+Kd 0.65 0.2300000000000002 0.54
+d 0.2
+
+newmtl hit_points_at_lens_9
+Kd 0.65 0.2300000000000002 0.54
+d 0.2
+
+newmtl primary_rays_at_object_9
+Kd 0.44999999999999996 0.43000000000000016 0.040000000000000036
+d 0.2
+
+newmtl 1st_refraction_at_object_9
+Kd 0.44999999999999996 0.43000000000000016 0.040000000000000036
+d 0.2
+
+newmtl 2nd_refraction_at_object_9
+Kd 0.44999999999999996 0.43000000000000016 0.040000000000000036
+d 0.2
+
+newmtl 3rd_refraction_at_object_9
+Kd 0.44999999999999996 0.43000000000000016 0.040000000000000036
+d 0.2
+
+newmtl hit_points_at_object_9
+Kd 0.44999999999999996 0.43000000000000016 0.040000000000000036
+d 0.2
+
+newmtl primary_rays_through_lens_10
+Kd 0.0 0.30000000000000004 0.5999999999999999
+d 0.2
+
+newmtl 1st_refraction_through_lens_10
+Kd 0.0 0.30000000000000004 0.5999999999999999
+d 0.2
+
+newmtl 2nd_refraction_through_lens_10
+Kd 0.0 0.30000000000000004 0.5999999999999999
+d 0.2
+
+newmtl 3rd_refraction_through_lens_10
+Kd 0.0 0.30000000000000004 0.5999999999999999
+d 0.2
+
+newmtl hit_points_at_lens_10
+Kd 0.0 0.30000000000000004 0.5999999999999999
+d 0.2
+
+newmtl primary_rays_at_object_10
+Kd 0.5 0.5000000000000002 0.10000000000000009
+d 0.2
+
+newmtl 1st_refraction_at_object_10
+Kd 0.5 0.5000000000000002 0.10000000000000009
+d 0.2
+
+newmtl 2nd_refraction_at_object_10
+Kd 0.5 0.5000000000000002 0.10000000000000009
+d 0.2
+
+newmtl 3rd_refraction_at_object_10
+Kd 0.5 0.5000000000000002 0.10000000000000009
+d 0.2
+
+newmtl hit_points_at_object_10
+Kd 0.5 0.5000000000000002 0.10000000000000009
+d 0.2
+
+newmtl primary_rays_through_lens_11
+Kd 0.050000000000000044 0.3700000000000001 0.6599999999999999
+d 0.2
+
+newmtl 1st_refraction_through_lens_11
+Kd 0.050000000000000044 0.3700000000000001 0.6599999999999999
+d 0.2
+
+newmtl 2nd_refraction_through_lens_11
+Kd 0.050000000000000044 0.3700000000000001 0.6599999999999999
+d 0.2
+
+newmtl 3rd_refraction_through_lens_11
+Kd 0.050000000000000044 0.3700000000000001 0.6599999999999999
+d 0.2
+
+newmtl hit_points_at_lens_11
+Kd 0.050000000000000044 0.3700000000000001 0.6599999999999999
+d 0.2
+
+newmtl primary_rays_at_object_11
+Kd 0.55 0.5700000000000001 0.15999999999999992
+d 0.2
+
+newmtl 1st_refraction_at_object_11
+Kd 0.55 0.5700000000000001 0.15999999999999992
+d 0.2
+
+newmtl 2nd_refraction_at_object_11
+Kd 0.55 0.5700000000000001 0.15999999999999992
+d 0.2
+
+newmtl 3rd_refraction_at_object_11
+Kd 0.55 0.5700000000000001 0.15999999999999992
+d 0.2
+
+newmtl hit_points_at_object_11
+Kd 0.55 0.5700000000000001 0.15999999999999992
+d 0.2
+
+newmtl primary_rays_through_lens_12
+Kd 0.10000000000000009 0.44000000000000017 0.020000000000000018
+d 0.2
+
+newmtl 1st_refraction_through_lens_12
+Kd 0.10000000000000009 0.44000000000000017 0.020000000000000018
+d 0.2
+
+newmtl 2nd_refraction_through_lens_12
+Kd 0.10000000000000009 0.44000000000000017 0.020000000000000018
+d 0.2
+
+newmtl 3rd_refraction_through_lens_12
+Kd 0.10000000000000009 0.44000000000000017 0.020000000000000018
+d 0.2
+
+newmtl hit_points_at_lens_12
+Kd 0.10000000000000009 0.44000000000000017 0.020000000000000018
+d 0.2
+
+newmtl primary_rays_at_object_12
+Kd 0.6000000000000001 0.6400000000000001 0.21999999999999997
+d 0.2
+
+newmtl 1st_refraction_at_object_12
+Kd 0.6000000000000001 0.6400000000000001 0.21999999999999997
+d 0.2
+
+newmtl 2nd_refraction_at_object_12
+Kd 0.6000000000000001 0.6400000000000001 0.21999999999999997
+d 0.2
+
+newmtl 3rd_refraction_at_object_12
+Kd 0.6000000000000001 0.6400000000000001 0.21999999999999997
+d 0.2
+
+newmtl hit_points_at_object_12
+Kd 0.6000000000000001 0.6400000000000001 0.21999999999999997
+d 0.2
+
+newmtl primary_rays_through_lens_13
+Kd 0.15000000000000013 0.5100000000000002 0.08000000000000007
+d 0.2
+
+newmtl 1st_refraction_through_lens_13
+Kd 0.15000000000000013 0.5100000000000002 0.08000000000000007
+d 0.2
+
+newmtl 2nd_refraction_through_lens_13
+Kd 0.15000000000000013 0.5100000000000002 0.08000000000000007
+d 0.2
+
+newmtl 3rd_refraction_through_lens_13
+Kd 0.15000000000000013 0.5100000000000002 0.08000000000000007
+d 0.2
+
+newmtl hit_points_at_lens_13
+Kd 0.15000000000000013 0.5100000000000002 0.08000000000000007
+d 0.2
+
+newmtl primary_rays_at_object_13
+Kd 0.6500000000000001 0.010000000000000231 0.28
+d 0.2
+
+newmtl 1st_refraction_at_object_13
+Kd 0.6500000000000001 0.010000000000000231 0.28
+d 0.2
+
+newmtl 2nd_refraction_at_object_13
+Kd 0.6500000000000001 0.010000000000000231 0.28
+d 0.2
+
+newmtl 3rd_refraction_at_object_13
+Kd 0.6500000000000001 0.010000000000000231 0.28
+d 0.2
+
+newmtl hit_points_at_object_13
+Kd 0.6500000000000001 0.010000000000000231 0.28
+d 0.2
+
+newmtl primary_rays_through_lens_14
+Kd 0.20000000000000018 0.5800000000000001 0.14000000000000012
+d 0.2
+
+newmtl 1st_refraction_through_lens_14
+Kd 0.20000000000000018 0.5800000000000001 0.14000000000000012
+d 0.2
+
+newmtl 2nd_refraction_through_lens_14
+Kd 0.20000000000000018 0.5800000000000001 0.14000000000000012
+d 0.2
+
+newmtl 3rd_refraction_through_lens_14
+Kd 0.20000000000000018 0.5800000000000001 0.14000000000000012
+d 0.2
+
+newmtl hit_points_at_lens_14
+Kd 0.20000000000000018 0.5800000000000001 0.14000000000000012
+d 0.2
+
+newmtl primary_rays_at_object_14
+Kd 0.0 0.08000000000000007 0.3400000000000001
+d 0.2
+
+newmtl 1st_refraction_at_object_14
+Kd 0.0 0.08000000000000007 0.3400000000000001
+d 0.2
+
+newmtl 2nd_refraction_at_object_14
+Kd 0.0 0.08000000000000007 0.3400000000000001
+d 0.2
+
+newmtl 3rd_refraction_at_object_14
+Kd 0.0 0.08000000000000007 0.3400000000000001
+d 0.2
+
+newmtl hit_points_at_object_14
+Kd 0.0 0.08000000000000007 0.3400000000000001
+d 0.2
+
+newmtl primary_rays_through_lens_15
+Kd 0.25 0.6500000000000001 0.19999999999999996
+d 0.2
+
+newmtl 1st_refraction_through_lens_15
+Kd 0.25 0.6500000000000001 0.19999999999999996
+d 0.2
+
+newmtl 2nd_refraction_through_lens_15
+Kd 0.25 0.6500000000000001 0.19999999999999996
+d 0.2
+
+newmtl 3rd_refraction_through_lens_15
+Kd 0.25 0.6500000000000001 0.19999999999999996
+d 0.2
+
+newmtl hit_points_at_lens_15
+Kd 0.25 0.6500000000000001 0.19999999999999996
+d 0.2
+
+newmtl primary_rays_at_object_15
+Kd 0.050000000000000044 0.15000000000000013 0.3999999999999999
+d 0.2
+
+newmtl 1st_refraction_at_object_15
+Kd 0.050000000000000044 0.15000000000000013 0.3999999999999999
+d 0.2
+
+newmtl 2nd_refraction_at_object_15
+Kd 0.050000000000000044 0.15000000000000013 0.3999999999999999
+d 0.2
+
+newmtl 3rd_refraction_at_object_15
+Kd 0.050000000000000044 0.15000000000000013 0.3999999999999999
+d 0.2
+
+newmtl hit_points_at_object_15
+Kd 0.050000000000000044 0.15000000000000013 0.3999999999999999
+d 0.2
+
+newmtl primary_rays_through_lens_16
+Kd 0.30000000000000004 0.02000000000000024 0.26
+d 0.2
+
+newmtl 1st_refraction_through_lens_16
+Kd 0.30000000000000004 0.02000000000000024 0.26
+d 0.2
+
+newmtl 2nd_refraction_through_lens_16
+Kd 0.30000000000000004 0.02000000000000024 0.26
+d 0.2
+
+newmtl 3rd_refraction_through_lens_16
+Kd 0.30000000000000004 0.02000000000000024 0.26
+d 0.2
+
+newmtl hit_points_at_lens_16
+Kd 0.30000000000000004 0.02000000000000024 0.26
+d 0.2
+
+newmtl primary_rays_at_object_16
+Kd 0.10000000000000009 0.2200000000000002 0.45999999999999996
+d 0.2
+
+newmtl 1st_refraction_at_object_16
+Kd 0.10000000000000009 0.2200000000000002 0.45999999999999996
+d 0.2
+
+newmtl 2nd_refraction_at_object_16
+Kd 0.10000000000000009 0.2200000000000002 0.45999999999999996
+d 0.2
+
+newmtl 3rd_refraction_at_object_16
+Kd 0.10000000000000009 0.2200000000000002 0.45999999999999996
+d 0.2
+
+newmtl hit_points_at_object_16
+Kd 0.10000000000000009 0.2200000000000002 0.45999999999999996
+d 0.2
+
+newmtl primary_rays_through_lens_17
+Kd 0.3500000000000001 0.0900000000000003 0.32000000000000006
+d 0.2
+
+newmtl 1st_refraction_through_lens_17
+Kd 0.3500000000000001 0.0900000000000003 0.32000000000000006
+d 0.2
+
+newmtl 2nd_refraction_through_lens_17
+Kd 0.3500000000000001 0.0900000000000003 0.32000000000000006
+d 0.2
+
+newmtl 3rd_refraction_through_lens_17
+Kd 0.3500000000000001 0.0900000000000003 0.32000000000000006
+d 0.2
+
+newmtl hit_points_at_lens_17
+Kd 0.3500000000000001 0.0900000000000003 0.32000000000000006
+d 0.2
+
+newmtl primary_rays_at_object_17
+Kd 0.15000000000000013 0.29000000000000026 0.52
+d 0.2
+
+newmtl 1st_refraction_at_object_17
+Kd 0.15000000000000013 0.29000000000000026 0.52
+d 0.2
+
+newmtl 2nd_refraction_at_object_17
+Kd 0.15000000000000013 0.29000000000000026 0.52
+d 0.2
+
+newmtl 3rd_refraction_at_object_17
+Kd 0.15000000000000013 0.29000000000000026 0.52
+d 0.2
+
+newmtl hit_points_at_object_17
+Kd 0.15000000000000013 0.29000000000000026 0.52
+d 0.2
+
+newmtl primary_rays_through_lens_18
+Kd 0.40000000000000013 0.16000000000000036 0.3800000000000001
+d 0.2
+
+newmtl 1st_refraction_through_lens_18
+Kd 0.40000000000000013 0.16000000000000036 0.3800000000000001
+d 0.2
+
+newmtl 2nd_refraction_through_lens_18
+Kd 0.40000000000000013 0.16000000000000036 0.3800000000000001
+d 0.2
+
+newmtl 3rd_refraction_through_lens_18
+Kd 0.40000000000000013 0.16000000000000036 0.3800000000000001
+d 0.2
+
+newmtl hit_points_at_lens_18
+Kd 0.40000000000000013 0.16000000000000036 0.3800000000000001
+d 0.2
+
+newmtl primary_rays_at_object_18
+Kd 0.20000000000000018 0.3600000000000003 0.5800000000000001
+d 0.2
+
+newmtl 1st_refraction_at_object_18
+Kd 0.20000000000000018 0.3600000000000003 0.5800000000000001
+d 0.2
+
+newmtl 2nd_refraction_at_object_18
+Kd 0.20000000000000018 0.3600000000000003 0.5800000000000001
+d 0.2
+
+newmtl 3rd_refraction_at_object_18
+Kd 0.20000000000000018 0.3600000000000003 0.5800000000000001
+d 0.2
+
+newmtl hit_points_at_object_18
+Kd 0.20000000000000018 0.3600000000000003 0.5800000000000001
+d 0.2
+
+newmtl primary_rays_through_lens_19
+Kd 0.4500000000000002 0.2300000000000002 0.43999999999999995
+d 0.2
+
+newmtl 1st_refraction_through_lens_19
+Kd 0.4500000000000002 0.2300000000000002 0.43999999999999995
+d 0.2
+
+newmtl 2nd_refraction_through_lens_19
+Kd 0.4500000000000002 0.2300000000000002 0.43999999999999995
+d 0.2
+
+newmtl 3rd_refraction_through_lens_19
+Kd 0.4500000000000002 0.2300000000000002 0.43999999999999995
+d 0.2
+
+newmtl hit_points_at_lens_19
+Kd 0.4500000000000002 0.2300000000000002 0.43999999999999995
+d 0.2
+
+newmtl primary_rays_at_object_19
+Kd 0.25 0.43000000000000016 0.6399999999999999
+d 0.2
+
+newmtl 1st_refraction_at_object_19
+Kd 0.25 0.43000000000000016 0.6399999999999999
+d 0.2
+
+newmtl 2nd_refraction_at_object_19
+Kd 0.25 0.43000000000000016 0.6399999999999999
+d 0.2
+
+newmtl 3rd_refraction_at_object_19
+Kd 0.25 0.43000000000000016 0.6399999999999999
+d 0.2
+
+newmtl hit_points_at_object_19
+Kd 0.25 0.43000000000000016 0.6399999999999999
+d 0.2
 

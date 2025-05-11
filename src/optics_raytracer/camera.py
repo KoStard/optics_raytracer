@@ -327,8 +327,8 @@ class EyeCamera(Camera):
         for ray, hit_point in zip(
             rays_to_lens[hit_mask][tracing_mask], hit_points[tracing_mask]
         ):
-            exporter.add_line(ray["origin"], hit_point, group="camera_rays")
-            exporter.add_point(hit_point, group="lens_hits")
+            exporter.add_line(ray["origin"], hit_point, group="camera_internal_rays")
+            exporter.add_point(hit_point, group="camera_lens_intersection")
 
         return refracted_rays
 
