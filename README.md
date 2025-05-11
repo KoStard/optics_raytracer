@@ -51,10 +51,10 @@ Create a config.json file:
         },
         {
             "type": "lens",           // Second lens
-            "center": [x, y, z],      
-            "radius": 1.0,            
-            "normal": [x, y, z],      
-            "focal_distance": 1.0     
+            "center": [x, y, z],
+            "radius": 1.0,
+            "normal": [x, y, z],
+            "focal_distance": 1.0
         },
         {
             "type": "image",          // Type of object
@@ -112,13 +112,13 @@ Example config files are available in the `examples/` directory. Run them with:
 # Run telescope example
 optics-raytracer examples/telescope.json
 
-# Run microscope example 
+# Run microscope example
 optics-raytracer examples/microscope.json
 ```
 Some ready examples to check:
-- [Simple Demo With Convex and Concave Lenses](https://3dviewer.net/index.html#model=https://raw.githubusercontent.com/KoStard/optics_raytracer/refs/heads/master/scene.obj)
-- [Simple Telescope](https://3dviewer.net/#model=https://raw.githubusercontent.com/KoStard/optics_raytracer/refs/heads/master/telescope_scene.obj)
-- [Simple Microscope](https://3dviewer.net/#model=https://raw.githubusercontent.com/KoStard/optics_raytracer/refs/heads/master/microscope_scene.obj)
+- [Simple Demo With Convex and Concave Lenses](https://3dviewer.net/index.html#model=https://raw.githubusercontent.com/KoStard/optics_raytracer/refs/heads/master/examples/scene.obj)
+- [Simple Telescope](https://3dviewer.net/#model=https://raw.githubusercontent.com/KoStard/optics_raytracer/refs/heads/master/examples/telescope_scene.obj)
+- [Simple Microscope](https://3dviewer.net/#model=https://raw.githubusercontent.com/KoStard/optics_raytracer/refs/heads/master/examples/microscope_scene.obj)
 
 Notice that not all rays and hits are rendered in the OBJ to keep the file light. The rendered ones are chosen randomly.
 
