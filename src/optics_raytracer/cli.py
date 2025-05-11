@@ -2,7 +2,6 @@ import json
 import sys
 from pathlib import Path
 from typing import Dict, Any
-from PIL import Image
 from .engine import OpticsRayTracingEngine
 from .camera import Camera, FloatSize, IntegerSize, SimpleCamera
 from .lens import Lens
@@ -40,7 +39,7 @@ def parse_config(config: Dict[str, Any]) -> OpticsRayTracingEngine:
             image_path = Path(obj['image_path'])
             if not image_path.exists():
                 raise FileNotFoundError(f"Image not found: {image_path}")
-            
+
             objects.append(InsertedImage(
                 image_path=str(image_path),
                 width=obj['width'],
@@ -61,7 +60,7 @@ def main():
     if len(sys.argv) != 2:
         print("Usage: optics-raytracer <config.json>")
         sys.exit(1)
-    
+
     config_path = Path(sys.argv[1])
     if not config_path.exists():
         print(f"Config file not found: {config_path}")
@@ -70,11 +69,12 @@ def main():
     try:
         with open(config_path) as f:
             config = json.load(f)
-        
+
         engine = parse_config(config)
         engine.render(
             output_image_path=config['output']['image_path'],
-            output_3d_path=config['output'].get('obj_path')
+            output_3d_path=config['output'].get('obj_path'),
+            output_mtl_path=config['output']['obj_path'].replace('.obj', '.mtl') if config['output'].get('obj_path') else None,
         )
     except Exception as e:
         print(f"Error: {str(e)}")

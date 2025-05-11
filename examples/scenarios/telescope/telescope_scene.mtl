@@ -1,0 +1,56 @@
+newmtl rays
+Kd 1 0 0
+d 0.1
+
+newmtl rays/missed
+Kd 1 0 0
+d 0.1
+
+newmtl rays/1_depth
+Kd 1 0 0
+d 0.1
+
+newmtl rays/2_depth
+Kd 1 0 0
+d 0.1
+
+newmtl rays/3_depth
+Kd 1 0 0
+d 0.1
+
+newmtl rays/4_depth
+Kd 1 0 0
+d 0.1
+
+newmtl rays/5_depth
+Kd 1 0 0
+d 0.1
+
+newmtl rays/6_depth
+Kd 1 0 0
+d 0.1
+
+newmtl rays/7_depth
+Kd 1 0 0
+d 0.1
+
+newmtl rays/8_depth
+Kd 1 0 0
+d 0.1
+
+newmtl rays/9_depth
+Kd 1 0 0
+d 0.1
+
+newmtl circles
+Kd 0 0 1
+d 0.5
+
+newmtl rectangles
+Kd 0 1 0
+d 0.5
+
+newmtl hits
+Kd 0 0 0
+d 1
+
