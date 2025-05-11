@@ -11,7 +11,7 @@ A 3D optics raytracer for simulating thin lenses and image projection, with OBJ 
 - Clear group naming in OBJ files
 - Multiple configuration methods (CLI, Python, JSON)
 
-![Optics Simulation](https://github.com/user-attachments/assets/ea337d37-45da-4bc2-a82c-38d84c8d583a)
+![Board](https://github.com/user-attachments/assets/44d65d6f-788d-4c75-894c-392aa97065a2)
 
 3D Examples:
 - [telescope_scene](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/astronomical_telescope/telescope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/astronomical_telescope/telescope_scene.obj)
