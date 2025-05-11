@@ -75,7 +75,8 @@ Create a config.json file:
         "image_path": "output.png",   # Path to save rendered image
         "obj_path": "scene.obj"       # Path to save 3D scene (optional)
     },
-    "ray_sampling_rate": 0.01         # Rate for sampling rays in 3D export (optional)
+    "ray_sampling_rate": 0.01,        # Rate for sampling rays in 3D export (optional)
+    "compare_with_without_lenses": true # Generate side-by-side comparison with/without lenses (optional)
 }
 ```
 
@@ -109,6 +110,7 @@ Create a config.json file:
 
 #### Additional Settings
 - **ray_sampling_rate**: Rate for sampling rays in 3D export (optional, default value used if not specified)
+- **compare_with_without_lenses**: If true, renders the scene twice (with and without lenses) and combines the results into a single side-by-side comparison image (optional, default is false)
 
 #### Examples
 
@@ -164,7 +166,8 @@ engine = OpticsRayTracingEngine(
     camera=camera,
     objects=[image],
     lenses=[lens],
-    ray_sampling_rate_for_3d_export=0.01
+    ray_sampling_rate_for_3d_export=0.01,
+    compare_with_without_lenses=True  # Generate side-by-side comparison
 )
 
 # Render the scene

@@ -60,6 +60,7 @@ def parse_config(config: Dict[str, Any]) -> OpticsRayTracingEngine:
         objects=objects,
         lenses=lenses,
         ray_sampling_rate_for_3d_export=config.get("ray_sampling_rate", 0.01),
+        compare_with_without_lenses=config.get("compare_with_without_lenses", False),
     )
 
 
