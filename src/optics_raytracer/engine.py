@@ -66,7 +66,7 @@ class OpticsRayTracingEngine:
         # Trace colors for all rays
         colors = color_tracer.get_colors(rays)
         pixel_colors = self.camera.convert_ray_colors_to_pixel_colors(colors)
-        pixel_colors *= 255.999  # Convert to 8-bit RGB values
+        pixel_colors *= 255  # Convert to 8-bit RGB values
         image_saver.write_pixels(
             pixel_colors.reshape(image_size.height, image_size.width, 3)
         )
