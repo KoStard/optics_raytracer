@@ -40,8 +40,23 @@ Create a config.json file:
 ```python
 {
     "camera": {
+        // Simple camera (default)
+        "type": "simple",             # Camera type: "simple" or "eye"
         "center": [x, y, z],          # Camera position in 3D space
         "focal_distance": 1.0,        # Distance from camera to viewport
+        "viewport_width": 2.0,        # Width of viewport in world units
+        "image_size": [w, h],         # Output image resolution in pixels
+        "u_vector": [x, y, z],        # Right direction vector (typically [1,0,0])
+        "viewport_normal": [x, y, z]  # Direction camera is pointing (away from camera)
+        
+        // Or eye-like camera
+        "type": "eye",                # Camera type: "simple" or "eye"
+        "center": [x, y, z],          # Viewport center position
+        "lens_distance": 1.0,         # Distance from viewport to lens
+        "lens_radius": 0.5,           # Radius of the lens
+        "lens_focal_distance": 0.24,  # Focal distance of the lens
+        "number_of_circles": 2,       # Number of concentric sampling circles on lens (optional, default: 2)
+        "rays_per_circle": 5,         # Rays per sampling circle (optional, default: 5)
         "viewport_width": 2.0,        # Width of viewport in world units
         "image_size": [w, h],         # Output image resolution in pixels
         "u_vector": [x, y, z],        # Right direction vector (typically [1,0,0])
@@ -83,8 +98,24 @@ Create a config.json file:
 ### Configuration Attributes Explained
 
 #### Camera Settings
+
+##### Simple Camera (default)
+- **type**: Camera type, set to "simple" or omit for simple camera
 - **center**: The 3D position of the camera in world coordinates (x,y,z)
 - **focal_distance**: Distance from camera to the viewport plane
+- **viewport_width**: Width of viewport in world units (height calculated based on aspect ratio)
+- **image_size**: Resolution of output image in pixels [width, height]
+- **u_vector**: Right direction vector of the camera (typically [1,0,0])
+- **viewport_normal**: Direction the camera is pointing (normal vector away from camera)
+
+##### Eye-like Camera
+- **type**: Camera type, set to "eye" for eye-like camera with lens
+- **center**: The 3D position of the viewport in world coordinates (x,y,z)
+- **lens_distance**: Distance from viewport to lens
+- **lens_radius**: Physical radius of the lens
+- **lens_focal_distance**: Focal distance of the lens
+- **number_of_circles**: Number of concentric sampling circles on lens (optional, default: 2) 
+- **rays_per_circle**: Number of rays per sampling circle (optional, default: 5)
 - **viewport_width**: Width of viewport in world units (height calculated based on aspect ratio)
 - **image_size**: Resolution of output image in pixels [width, height]
 - **u_vector**: Right direction vector of the camera (typically [1,0,0])

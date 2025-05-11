@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 from typing import Dict, Any
 from .engine import OpticsRayTracingEngine
-from .camera import FloatSize, IntegerSize, SimpleCamera
+from .camera import EyeCamera, FloatSize, IntegerSize, SimpleCamera
 from .lens import Lens
 from .inserted_image import InsertedImage
 import numpy as np
@@ -13,16 +13,36 @@ def parse_config(config: Dict[str, Any]) -> OpticsRayTracingEngine:
     """Parse JSON config into OpticsRayTracingEngine instance"""
     # Parse camera
     cam_cfg = config["camera"]
-    camera = SimpleCamera.build(
-        camera_center=np.array(cam_cfg["center"], dtype=np.float32),
-        focal_distance=cam_cfg["focal_distance"],
-        viewport_size=FloatSize.from_width_and_aspect_ratio(
-            cam_cfg["viewport_width"], IntegerSize(*cam_cfg["image_size"]).aspect_ratio
-        ),
-        image_size=IntegerSize(*cam_cfg["image_size"]),
-        viewport_u_vector=np.array(cam_cfg["u_vector"], dtype=np.float32),
-        viewport_normal=np.array(cam_cfg["viewport_normal"], dtype=np.float32),
-    )
+    camera_type = cam_cfg.get("type", "simple")  # Default to simple camera for backward compatibility
+
+    if camera_type == "eye":
+        # Eye camera requires a lens configuration
+        camera = EyeCamera.build(
+            viewport_center=np.array(cam_cfg["center"], dtype=np.float32),
+            lens_distance=cam_cfg["lens_distance"],
+            lens_radius=cam_cfg["lens_radius"],
+            number_of_circles=cam_cfg.get("number_of_circles", 2),  # Default to 2 circles
+            rays_per_circle=cam_cfg.get("rays_per_circle", 5),      # Default to 5 rays per circle
+            viewport_size=FloatSize.from_width_and_aspect_ratio(
+                cam_cfg["viewport_width"], IntegerSize(*cam_cfg["image_size"]).aspect_ratio
+            ),
+            image_size=IntegerSize(*cam_cfg["image_size"]),
+            viewport_u_vector=np.array(cam_cfg["u_vector"], dtype=np.float32),
+            viewport_normal=np.array(cam_cfg["viewport_normal"], dtype=np.float32),
+            lens_focal_distance=cam_cfg["lens_focal_distance"],
+        )
+    else:
+        # Default to simple camera for backward compatibility
+        camera = SimpleCamera.build(
+            camera_center=np.array(cam_cfg["center"], dtype=np.float32),
+            focal_distance=cam_cfg["focal_distance"],
+            viewport_size=FloatSize.from_width_and_aspect_ratio(
+                cam_cfg["viewport_width"], IntegerSize(*cam_cfg["image_size"]).aspect_ratio
+            ),
+            image_size=IntegerSize(*cam_cfg["image_size"]),
+            viewport_u_vector=np.array(cam_cfg["u_vector"], dtype=np.float32),
+            viewport_normal=np.array(cam_cfg["viewport_normal"], dtype=np.float32),
+        )
 
     # Parse objects
     objects = []
