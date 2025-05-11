@@ -6,11 +6,17 @@ A 3D optics raytracer for simulating thin lenses and image projection, with OBJ 
 
 - Thin lens simulation with focal distances
 - Image projection through lenses
-- 3D scene export to OBJ format
-- Multiple configuration methods (CLI, Python, JSON)
 - Ray visualization in 3D space
+- 3D scene export to OBJ format
+- Clear group naming in OBJ files
+- Multiple configuration methods (CLI, Python, JSON)
 
 ![Optics Simulation](https://github.com/user-attachments/assets/ea337d37-45da-4bc2-a82c-38d84c8d583a)
+
+3D Examples:
+- [Demo with Eye-like camera with focal distance](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/eye_like_camera/test_with_eye.obj,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/eye_like_camera/test_with_eye.mtl)
+- [Simple Telescope](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/telescope/telescope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/telescope/telescope_scene.obj)
+- [Simple Microscope](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/microscope/microscope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/microscope/microscope_scene.obj)
 
 
 ## Installation
@@ -115,12 +121,6 @@ optics-raytracer examples/telescope.json
 # Run microscope example
 optics-raytracer examples/microscope.json
 ```
-Some ready examples to check:
-- [Demo with Eye-like camera with focal distance](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/eye_like_camera/test_with_eye.obj,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/eye_like_camera/test_with_eye.mtl)
-- [Simple Telescope](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/telescope/telescope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/telescope/telescope_scene.obj)
-- [Simple Microscope](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/microscope/microscope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/microscope/microscope_scene.obj)
-
-Notice that not all rays and hits are rendered in the OBJ to keep the file light. The rendered ones are chosen randomly.
 
 ### 2. Python Configuration
 
