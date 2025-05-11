@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from .ray_group_namer import RayGroupNamer
+from .group_namer import GroupNamer
 
 
 class Exporter3D:
@@ -52,9 +52,9 @@ class Exporter3D:
         prev_idx = start_idx
         for pt in points[1:]:
             idx = self._add_vertex(pt)
-            self.lines.append(([prev_idx, idx], "circles"))
+            self.lines.append(([prev_idx, idx], GroupNamer.get_lens_outlines()))
             prev_idx = idx
-        self.lines.append(([prev_idx, start_idx], "circles"))
+        self.lines.append(([prev_idx, start_idx], GroupNamer.get_lens_outlines()))
 
     def add_rectangle(self, rectangle: np.ndarray):
         """Add a rectangle using rectangle_dtype"""
@@ -72,9 +72,11 @@ class Exporter3D:
 
         # Add edges
         for start, end in [(p1, p2), (p2, p3), (p3, p4), (p4, p1)]:
-            self.add_line(start, end, group="rectangles")
+            self.add_line(start, end, group=GroupNamer.get_screen_outlines())
 
-    def add_point(self, point: np.ndarray, group="hits", size=0.01):
+    def add_point(self, point: np.ndarray, group=None, size=0.01):
+        if group is None:
+            group = GroupNamer.get_hit_points()
         """Add a point as a small cross for visibility"""
         offsets = np.eye(3) * size
         for axis in range(3):
@@ -103,17 +105,16 @@ class Exporter3D:
             return (r, g, b, alpha)
 
         materials = {
-            "primary_rays": rays_color,
-            "missed_rays": (0.1, 0.1, 0.1, 0.1),
-            "lens_outlines": (0, 0.4, 0.8, 0.5),  # blue, semi-transparent
-            "screen_outlines": (0, 0.6, 0.2, 0.5),  # green, semi-transparent
-            "hit_points": (0, 0, 0, 1),  # black, opaque
+            GroupNamer.get_primary_rays(): rays_color,
+            GroupNamer.get_missed_rays(): (0.1, 0.1, 0.1, 0.1),
+            GroupNamer.get_lens_outlines(): (0, 0.4, 0.8, 0.5),  # blue, semi-transparent
+            GroupNamer.get_screen_outlines(): (0, 0.6, 0.2, 0.5),  # green, semi-transparent
+            GroupNamer.get_hit_points(): (0, 0, 0, 1),  # black, opaque
         }
 
         # Add basic refraction depth materials
         for depth in range(1, 10):
-            ordinal = RayGroupNamer.get_ordinal(depth)
-            materials[f"{ordinal}_refraction"] = rays_color
+            materials[GroupNamer.get_refraction_rays(depth)] = rays_color
 
         # Add materials for each lens and object dynamically
         # We don't know how many there will be, so we'll create materials for a reasonable number
@@ -123,37 +124,37 @@ class Exporter3D:
 
             lens_color = generate_color(hit_object_index, "lens")
             materials[
-                RayGroupNamer.get_ray_group_name(None, "lens", hit_object_index)
+                GroupNamer.get_ray_group_name(None, "lens", hit_object_index)
             ] = lens_color
-            materials[RayGroupNamer.get_ray_group_name(1, "lens", hit_object_index)] = (
+            materials[GroupNamer.get_ray_group_name(1, "lens", hit_object_index)] = (
                 lens_color
             )
-            materials[RayGroupNamer.get_ray_group_name(2, "lens", hit_object_index)] = (
+            materials[GroupNamer.get_ray_group_name(2, "lens", hit_object_index)] = (
                 lens_color
             )
-            materials[RayGroupNamer.get_ray_group_name(3, "lens", hit_object_index)] = (
+            materials[GroupNamer.get_ray_group_name(3, "lens", hit_object_index)] = (
                 lens_color
             )
             materials[
-                RayGroupNamer.get_hit_point_group_name("lens", hit_object_index)
+                GroupNamer.get_hit_point_group_name("lens", hit_object_index)
             ] = lens_color
 
             # Object ray materials
             obj_color = generate_color(hit_object_index, "object")
             materials[
-                RayGroupNamer.get_ray_group_name(None, "object", hit_object_index)
+                GroupNamer.get_ray_group_name(None, "object", hit_object_index)
             ] = obj_color
             materials[
-                RayGroupNamer.get_ray_group_name(1, "object", hit_object_index)
+                GroupNamer.get_ray_group_name(1, "object", hit_object_index)
             ] = obj_color
             materials[
-                RayGroupNamer.get_ray_group_name(2, "object", hit_object_index)
+                GroupNamer.get_ray_group_name(2, "object", hit_object_index)
             ] = obj_color
             materials[
-                RayGroupNamer.get_ray_group_name(3, "object", hit_object_index)
+                GroupNamer.get_ray_group_name(3, "object", hit_object_index)
             ] = obj_color
             materials[
-                RayGroupNamer.get_hit_point_group_name("object", hit_object_index)
+                GroupNamer.get_hit_point_group_name("object", hit_object_index)
             ] = obj_color
 
         # Create MTL file

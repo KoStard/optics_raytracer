@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 from optics_raytracer.export_3d import Exporter3D
+from optics_raytracer.group_namer import GroupNamer
 from optics_raytracer.lens import Lens
 from optics_raytracer.surface import get_surface_hit_ts, get_surface_hit_ts_mask
 
@@ -327,8 +328,8 @@ class EyeCamera(Camera):
         for ray, hit_point in zip(
             rays_to_lens[hit_mask][tracing_mask], hit_points[tracing_mask]
         ):
-            exporter.add_line(ray["origin"], hit_point, group="camera_internal_rays")
-            exporter.add_point(hit_point, group="camera_lens_intersection")
+            exporter.add_line(ray["origin"], hit_point, group=GroupNamer.get_camera_internal_rays())
+            exporter.add_point(hit_point, group=GroupNamer.get_camera_lens_intersection())
 
         return refracted_rays
 

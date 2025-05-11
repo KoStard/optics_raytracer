@@ -31,45 +31,45 @@ uv tool install git+https://github.com/KoStard/optics_raytracer
 ### 1. CLI Configuration (JSON)
 
 Create a config.json file:
-```json
+```python
 {
     "camera": {
-        "center": [x, y, z],          // Camera position in 3D space
-        "focal_distance": 1.0,        // Distance from camera to viewport
-        "viewport_width": 2.0,        // Width of viewport in world units
-        "image_size": [w, h],         // Output image resolution in pixels
-        "u_vector": [x, y, z],        // Right direction vector (typically [1,0,0])
-        "viewport_normal": [x, y, z]  // Direction camera is pointing (away from camera)
+        "center": [x, y, z],          # Camera position in 3D space
+        "focal_distance": 1.0,        # Distance from camera to viewport
+        "viewport_width": 2.0,        # Width of viewport in world units
+        "image_size": [w, h],         # Output image resolution in pixels
+        "u_vector": [x, y, z],        # Right direction vector (typically [1,0,0])
+        "viewport_normal": [x, y, z]  # Direction camera is pointing (away from camera)
     },
     "objects": [
         {
-            "type": "lens",           // Type of object
-            "center": [x, y, z],      // Lens center position
-            "radius": 1.0,            // Lens radius
-            "normal": [x, y, z],      // Lens orientation (normal vector)
-            "focal_distance": -1.0    // Focal length (positive for convex, negative for concave)
+            "type": "lens",           # Type of object
+            "center": [x, y, z],      # Lens center position
+            "radius": 1.0,            # Lens radius
+            "normal": [x, y, z],      # Lens orientation (normal vector)
+            "focal_distance": -1.0    # Focal length (positive for convex, negative for concave)
         },
         {
-            "type": "lens",           // Second lens
+            "type": "lens",           # Second lens
             "center": [x, y, z],
             "radius": 1.0,
             "normal": [x, y, z],
             "focal_distance": 1.0
         },
         {
-            "type": "image",          // Type of object
-            "image_path": "examples/image.png", // Path to source image file
-            "width": 4.0,             // Physical width of image in world units
-            "center": [x, y, z],      // Center position of image
-            "normal": [x, y, z],      // Image plane orientation (normal vector)
-            "u_vector": [x, y, z]     // Right direction vector of image plane
+            "type": "image",          # Type of object
+            "image_path": "examples/image.png", # Path to source image file
+            "width": 4.0,             # Physical width of image in world units
+            "center": [x, y, z],      # Center position of image
+            "normal": [x, y, z],      # Image plane orientation (normal vector)
+            "u_vector": [x, y, z]     # Right direction vector of image plane
         }
     ],
     "output": {
-        "image_path": "output.png",   // Path to save rendered image
-        "obj_path": "scene.obj"       // Path to save 3D scene (optional)
+        "image_path": "output.png",   # Path to save rendered image
+        "obj_path": "scene.obj"       # Path to save 3D scene (optional)
     },
-    "ray_sampling_rate": 0.01         // Rate for sampling rays in 3D export (optional)
+    "ray_sampling_rate": 0.01         # Rate for sampling rays in 3D export (optional)
 }
 ```
 

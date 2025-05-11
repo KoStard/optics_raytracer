@@ -3,7 +3,7 @@ from typing import List
 
 from optics_raytracer.circle import Circle, ColoredCircle
 from optics_raytracer.inserted_image import InsertedImage
-from optics_raytracer.ray_group_namer import RayGroupNamer
+from optics_raytracer.group_namer import GroupNamer
 from optics_raytracer.rectangle import ColoredRectangle
 from .ray import get_ray_points_array_at_t_array
 from .colored_object import ColoredObject
@@ -252,10 +252,10 @@ class ColorTracer:
             rays_group += f"/{hit_object_type}_{hit_object_index}"
 
         for ray, point in zip(rays[tracing_mask], points[tracing_mask]):
-            ray_group = RayGroupNamer.get_ray_group_name(
+            ray_group = GroupNamer.get_ray_group_name(
                 depth, hit_object_type, hit_object_index
             )
-            hit_group = RayGroupNamer.get_hit_point_group_name(
+            hit_group = GroupNamer.get_hit_point_group_name(
                 hit_object_type, hit_object_index
             )
 
@@ -275,7 +275,7 @@ class ColorTracer:
         for ray in rays[tracing_mask]:
             end_point = ray["origin"] + ray["direction"] * missed_rays_length
             # Use consistent naming scheme
-            self.exporter.add_line(ray["origin"], end_point, group="missed_rays")
+            self.exporter.add_line(ray["origin"], end_point, group=GroupNamer.get_missed_rays())
 
     def _get_random_tracing_mask(self, l):
         return np.random.rand(l) <= self.ray_sampling_rate_for_3d_export
