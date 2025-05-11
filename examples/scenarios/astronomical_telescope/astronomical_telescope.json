@@ -1,0 +1,39 @@
+{
+  "camera": {
+    "center": [0, 0, 0],
+    "focal_distance": 0.02,
+    "viewport_width": 0.04,
+    "image_size": [400, 400],
+    "u_vector": [1, 0, 0],
+    "viewport_normal": [0, 0, -1]
+  },
+  "objects": [
+    {
+      "type": "lens",
+      "center": [0, 0, -0.05],
+      "radius": 0.02,
+      "normal": [0, 0, -1],
+      "focal_distance": 0.025
+    },
+    {
+      "type": "lens",
+      "center": [0, 0, -0.5],
+      "radius": 0.2,
+      "normal": [0, 0, -1],
+      "focal_distance": 0.4
+    },
+    {
+      "type": "image",
+      "center": [0, 0, -100.0],
+      "width": 3.0,
+      "u_vector": [1, 0, 0],
+      "normal": [0, 0, -1],
+      "image_path": "examples/assets/image.png"
+    }
+  ],
+  "output": {
+    "image_path": "examples/scenarios/astronomical_telescope/telescope_view.png",
+    "obj_path": "examples/scenarios/astronomical_telescope/telescope_scene.obj"
+  },
+  "compare_with_without_lenses": true
+}
