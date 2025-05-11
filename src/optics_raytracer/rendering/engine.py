@@ -1,10 +1,10 @@
 from typing import List
-from .camera import Camera
-from .colored_object import ColoredObject
-from .lens import Lens
-from .color_tracer import ColorTracer
-from .export_3d import Exporter3D
-from .image_saver import ImageSaver
+from optics_raytracer.camera.camera import Camera
+from optics_raytracer.optics.colored_object import ColoredObject
+from optics_raytracer.optics.lens import Lens
+from optics_raytracer.rendering.color_tracer import ColorTracer
+from optics_raytracer.rendering.export_3d import Exporter3D
+from optics_raytracer.rendering.image_saver import ImageSaver
 
 
 class OpticsRayTracingEngine:

@@ -2,10 +2,11 @@ import json
 import sys
 from pathlib import Path
 from typing import Dict, Any
-from .engine import OpticsRayTracingEngine
-from .camera import EyeCamera, FloatSize, IntegerSize, SimpleCamera
-from .lens import Lens
-from .inserted_image import InsertedImage
+from optics_raytracer.rendering.engine import OpticsRayTracingEngine
+from optics_raytracer.camera.camera import EyeCamera, SimpleCamera
+from optics_raytracer.utils.size import FloatSize, IntegerSize
+from optics_raytracer.optics.lens import Lens
+from optics_raytracer.objects.inserted_image import InsertedImage
 import numpy as np
 
 

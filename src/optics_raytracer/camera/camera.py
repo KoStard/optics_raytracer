@@ -1,15 +1,15 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
-from optics_raytracer.export_3d import Exporter3D
-from optics_raytracer.group_namer import GroupNamer
-from optics_raytracer.lens import Lens
-from optics_raytracer.surface import get_surface_hit_ts, get_surface_hit_ts_mask
+from optics_raytracer.rendering.export_3d import Exporter3D
+from optics_raytracer.utils.group_namer import GroupNamer
+from optics_raytracer.optics.lens import Lens
+from optics_raytracer.core.surface import get_surface_hit_ts, get_surface_hit_ts_mask
 
-from .pixelated_viewport import get_pixel_points, pixelated_viewport_dtype
-from .primitives import vector_dtype
-from .size import FloatSize, IntegerSize
-from .ray import build_rays, get_ray_points_array_at_t_array
+from optics_raytracer.camera.pixelated_viewport import get_pixel_points, pixelated_viewport_dtype
+from optics_raytracer.core.primitives import vector_dtype
+from optics_raytracer.utils.size import FloatSize, IntegerSize
+from optics_raytracer.core.ray import build_rays, get_ray_points_array_at_t_array
 
 
 class Camera(ABC):

@@ -1,7 +1,7 @@
 import numpy as np
 
-from optics_raytracer.colored_object import ColoredObject
-from .primitives import vector_dtype
+from optics_raytracer.optics.colored_object import ColoredObject
+from optics_raytracer.core.primitives import vector_dtype
 
 circle_dtype = np.dtype(
     [

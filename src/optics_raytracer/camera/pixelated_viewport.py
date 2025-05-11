@@ -1,5 +1,5 @@
 import numpy as np
-from .primitives import vector_dtype
+from optics_raytracer.core.primitives import vector_dtype
 
 pixelated_viewport_dtype = np.dtype(
     [

@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from .group_namer import GroupNamer
+from optics_raytracer.utils.group_namer import GroupNamer
 
 
 class Exporter3D:

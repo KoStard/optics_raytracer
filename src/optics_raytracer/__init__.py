@@ -1,36 +1,36 @@
-from .primitives import vector_dtype, color_dtype, point_dtype
-from .group_namer import GroupNamer
-from .ray import (
+from optics_raytracer.core.primitives import vector_dtype, color_dtype, point_dtype
+from optics_raytracer.utils.group_namer import GroupNamer
+from optics_raytracer.core.ray import (
     ray_dtype,
     get_ray_point_at_t,
     get_ray_points_array_at_t_array,
     build_rays,
 )
-from .surface import surface_dtype, get_surface_hit_ts, get_surface_hit_ts_mask
-from .rectangle import rectangle_dtype, Rectangle
-from .circle import circle_dtype, Circle
-from .lens import lens_dtype, Lens
-from .camera import (
+from optics_raytracer.core.surface import surface_dtype, get_surface_hit_ts, get_surface_hit_ts_mask
+from optics_raytracer.geometry.rectangle import rectangle_dtype, Rectangle
+from optics_raytracer.geometry.circle import circle_dtype, Circle
+from optics_raytracer.optics.lens import lens_dtype, Lens
+from optics_raytracer.camera.camera import (
     simple_camera_viewport_dtype,
     Camera,
     SimpleCamera,
     EyeCamera,
     eye_camera_viewport_dtype,
 )
-from .cli import main
-from .color_tracer import ColorTracer
-from .colored_object import ColoredObject
-from .engine import OpticsRayTracingEngine
-from .export_3d import Exporter3D
-from .gif_builder import GifBuilder
-from .image_saver import ImageSaver
-from .inserted_image import InsertedImage
-from .pixelated_viewport import (
+from optics_raytracer.cli import main
+from optics_raytracer.rendering.color_tracer import ColorTracer
+from optics_raytracer.optics.colored_object import ColoredObject
+from optics_raytracer.rendering.engine import OpticsRayTracingEngine
+from optics_raytracer.rendering.export_3d import Exporter3D
+from optics_raytracer.rendering.gif_builder import GifBuilder
+from optics_raytracer.rendering.image_saver import ImageSaver
+from optics_raytracer.objects.inserted_image import InsertedImage
+from optics_raytracer.camera.pixelated_viewport import (
     build_pixelated_viewport,
     pixelated_viewport_dtype,
     get_pixel_points,
 )
-from .size import IntegerSize, FloatSize
+from optics_raytracer.utils.size import IntegerSize, FloatSize
 
 __all__ = [
     "vector_dtype",

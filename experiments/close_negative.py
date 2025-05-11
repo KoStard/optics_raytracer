@@ -12,9 +12,9 @@ Output files:
 
 import numpy as np
 from optics_raytracer.camera import EyeCamera, FloatSize, IntegerSize
-from optics_raytracer.lens import Lens
-from optics_raytracer.inserted_image import InsertedImage
-from optics_raytracer.engine import OpticsRayTracingEngine
+from optics_raytracer.optics.lens import Lens
+from optics_raytracer.objects.inserted_image import InsertedImage
+from optics_raytracer.rendering.engine import OpticsRayTracingEngine
 
 # Configuration constants (all distances in decimeters)
 EYE_LENS_FOCAL_DISTANCE = 0.24

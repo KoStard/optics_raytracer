@@ -1,7 +1,7 @@
 import numpy as np
 
-from optics_raytracer.ray import build_rays
-from .circle import circle_dtype
+from optics_raytracer.core.ray import build_rays
+from optics_raytracer.geometry.circle import circle_dtype
 
 lens_dtype = np.dtype(
     [

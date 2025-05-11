@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image
-from .colored_object import ColoredObject
-from .rectangle import Rectangle
+from optics_raytracer.optics.colored_object import ColoredObject
+from optics_raytracer.geometry.rectangle import Rectangle
 
 
 class InsertedImage(ColoredObject):

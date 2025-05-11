@@ -1,15 +1,15 @@
 import numpy as np
 from typing import List
 
-from optics_raytracer.circle import Circle, ColoredCircle
-from optics_raytracer.inserted_image import InsertedImage
-from optics_raytracer.group_namer import GroupNamer
-from optics_raytracer.rectangle import ColoredRectangle
-from .ray import get_ray_points_array_at_t_array
-from .colored_object import ColoredObject
-from .lens import Lens
-from .surface import get_surface_hit_ts, get_surface_hit_ts_mask
-from .export_3d import Exporter3D
+from optics_raytracer.geometry.circle import Circle, ColoredCircle
+from optics_raytracer.objects.inserted_image import InsertedImage
+from optics_raytracer.utils.group_namer import GroupNamer
+from optics_raytracer.geometry.rectangle import ColoredRectangle
+from optics_raytracer.core.ray import get_ray_points_array_at_t_array
+from optics_raytracer.optics.colored_object import ColoredObject
+from optics_raytracer.optics.lens import Lens
+from optics_raytracer.core.surface import get_surface_hit_ts, get_surface_hit_ts_mask
+from optics_raytracer.rendering.export_3d import Exporter3D
 
 
 class ColorTracer:
