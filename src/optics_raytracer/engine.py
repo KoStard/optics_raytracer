@@ -20,6 +20,7 @@ class OpticsRayTracingEngine:
         lenses: List[Lens],
         ray_sampling_rate_for_3d_export: float = 0.01,
         compare_with_without_lenses: bool = False,
+        include_missed_rays: bool = False,
     ):
         """
         Initialize the ray tracing engine.
@@ -36,6 +37,7 @@ class OpticsRayTracingEngine:
         self.lenses = lenses
         self.ray_sampling_rate = ray_sampling_rate_for_3d_export
         self.compare_with_without_lenses = compare_with_without_lenses
+        self.include_missed_rays = include_missed_rays
         self.exporter = Exporter3D()
 
     def render(
@@ -97,6 +99,7 @@ class OpticsRayTracingEngine:
             self.objects,
             self.lenses,
             ray_sampling_rate_for_3d_export=self.ray_sampling_rate,
+            include_missed_rays=self.include_missed_rays,
         )
 
         # Get rays from camera

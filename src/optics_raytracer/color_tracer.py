@@ -24,6 +24,7 @@ class ColorTracer:
         lenses: List[Lens],
         default_color: np.ndarray = np.array([0, 0, 0], dtype=np.float16),
         ray_sampling_rate_for_3d_export: np.float32 = np.float32(0.01),
+        include_missed_rays: bool = False,
     ):
         """
         Initialize the color tracer.
@@ -39,6 +40,7 @@ class ColorTracer:
         self.lenses = lenses
         self.default_color = default_color
         self.ray_sampling_rate_for_3d_export = ray_sampling_rate_for_3d_export
+        self.include_missed_rays = include_missed_rays
 
         for obj in colored_objects:
             if isinstance(obj, ColoredCircle):
@@ -217,9 +219,9 @@ class ColorTracer:
                         hit_object_index=obj_idx,
                     )
 
-        # Save visualization of missed rays
+        # Save visualization of missed rays if enabled
         missed_mask = ~(any_object_hit_mask | ray_hits_any_lens_mask)
-        if np.any(missed_mask):
+        if np.any(missed_mask) and self.include_missed_rays:
             self._save_missed_rays(rays[missed_mask])
 
         return colors

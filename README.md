@@ -40,6 +40,16 @@ uv tool install git+https://github.com/KoStard/optics_raytracer
 
 ### 1. CLI Configuration (JSON)
 
+The CLI tool can process one or multiple JSON configuration files:
+
+```bash
+# Process a single config file
+optics-raytracer config.json
+
+# Process multiple config files sequentially
+optics-raytracer config1.json config2.json config3.json
+```
+
 Create a config.json file:
 ```python
 {
@@ -146,6 +156,7 @@ Create a config.json file:
 #### Additional Settings
 - **ray_sampling_rate**: Rate for sampling rays in 3D export (optional, default value used if not specified)
 - **compare_with_without_lenses**: If true, renders the scene twice (with and without lenses) and combines the results into a single side-by-side comparison image (optional, default is false)
+- **include_missed_rays**: If true, includes rays that don't hit any object or lens in the 3D export (optional, default is false)
 
 #### Examples
 

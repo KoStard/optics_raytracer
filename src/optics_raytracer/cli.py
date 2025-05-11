@@ -81,34 +81,40 @@ def parse_config(config: Dict[str, Any]) -> OpticsRayTracingEngine:
         lenses=lenses,
         ray_sampling_rate_for_3d_export=config.get("ray_sampling_rate", 0.01),
         compare_with_without_lenses=config.get("compare_with_without_lenses", False),
+        include_missed_rays=config.get("include_missed_rays", False),
     )
 
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: optics-raytracer <config.json>")
+    if len(sys.argv) < 2:
+        print("Usage: optics-raytracer <config1.json> [config2.json] [...]")
         sys.exit(1)
 
-    config_path = Path(sys.argv[1])
-    if not config_path.exists():
-        print(f"Config file not found: {config_path}")
-        sys.exit(1)
+    # Process each config file sequentially
+    config_paths = [Path(path) for path in sys.argv[1:]]
+    
+    for config_path in config_paths:
+        if not config_path.exists():
+            print(f"Config file not found: {config_path}")
+            continue
 
-    try:
-        with open(config_path) as f:
-            config = json.load(f)
+        try:
+            print(f"Processing {config_path}...")
+            with open(config_path) as f:
+                config = json.load(f)
 
-        engine = parse_config(config)
-        engine.render(
-            output_image_path=config["output"]["image_path"],
-            output_3d_path=config["output"].get("obj_path"),
-            output_mtl_path=config["output"]["obj_path"].replace(".obj", ".mtl")
-            if config["output"].get("obj_path")
-            else None,
-        )
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        raise e
+            engine = parse_config(config)
+            engine.render(
+                output_image_path=config["output"]["image_path"],
+                output_3d_path=config["output"].get("obj_path"),
+                output_mtl_path=config["output"]["obj_path"].replace(".obj", ".mtl")
+                if config["output"].get("obj_path")
+                else None,
+            )
+            print(f"Completed processing {config_path}")
+        except Exception as e:
+            print(f"Error processing {config_path}: {str(e)}")
+            # Continue with next file instead of terminating
 
 
 if __name__ == "__main__":
