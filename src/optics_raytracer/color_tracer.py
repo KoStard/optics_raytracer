@@ -169,14 +169,16 @@ class ColorTracer:
 
             # Save visualization of hit rays
             for lens_idx, lens in enumerate(self.lenses):
-                lens_mask = hit_lens_indices_by_rays_order[ray_hits_any_lens_mask] == lens_idx
+                lens_mask = (
+                    hit_lens_indices_by_rays_order[ray_hits_any_lens_mask] == lens_idx
+                )
                 if np.any(lens_mask):
                     self._save_hit_rays(
-                        rays[ray_hits_any_lens_mask][lens_mask], 
+                        rays[ray_hits_any_lens_mask][lens_mask],
                         lens_hit_points[lens_mask],
                         depth=depth,
                         hit_object_type="lens",
-                        hit_object_index=lens_idx
+                        hit_object_index=lens_idx,
                     )
 
         # Get colors for non-lens hits
@@ -203,14 +205,16 @@ class ColorTracer:
 
             # Save visualization of hit rays
             for obj_idx in range(len(self.colored_objects)):
-                obj_mask = ray_hitting_object_indices_array[any_object_hit_mask] == obj_idx
+                obj_mask = (
+                    ray_hitting_object_indices_array[any_object_hit_mask] == obj_idx
+                )
                 if np.any(obj_mask):
                     self._save_hit_rays(
-                        rays[any_object_hit_mask][obj_mask], 
-                        lens_hit_points[obj_mask], 
+                        rays[any_object_hit_mask][obj_mask],
+                        lens_hit_points[obj_mask],
                         depth=depth,
                         hit_object_type="object",
-                        hit_object_index=obj_idx
+                        hit_object_index=obj_idx,
                     )
 
         # Save visualization of missed rays
@@ -220,7 +224,9 @@ class ColorTracer:
 
         return colors
 
-    def _save_hit_rays(self, rays, points, depth=None, hit_object_type=None, hit_object_index=None):
+    def _save_hit_rays(
+        self, rays, points, depth=None, hit_object_type=None, hit_object_index=None
+    ):
         """
         Save visualization of rays that hit objects.
 
@@ -233,22 +239,26 @@ class ColorTracer:
         """
         # Save visualization of hit rays
         tracing_mask = self._get_random_tracing_mask(len(rays))
-        
+
         # Base ray group
         rays_group = "rays"
-        
+
         # Add depth information if available
         if depth is not None:
             rays_group += f"/{depth}_depth"
-        
+
         # Add hit object information if available
         if hit_object_type is not None and hit_object_index is not None:
             rays_group += f"/{hit_object_type}_{hit_object_index}"
-            
+
         for ray, point in zip(rays[tracing_mask], points[tracing_mask]):
-            ray_group = RayGroupNamer.get_ray_group_name(depth, hit_object_type, hit_object_index)
-            hit_group = RayGroupNamer.get_hit_point_group_name(hit_object_type, hit_object_index)
-            
+            ray_group = RayGroupNamer.get_ray_group_name(
+                depth, hit_object_type, hit_object_index
+            )
+            hit_group = RayGroupNamer.get_hit_point_group_name(
+                hit_object_type, hit_object_index
+            )
+
             self.exporter.add_line(ray["origin"], point, group=ray_group)
             self.exporter.add_point(point, group=hit_group)
 

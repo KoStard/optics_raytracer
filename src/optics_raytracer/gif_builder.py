@@ -1,5 +1,3 @@
-
-
 class GifBuilder:
     """
     Class for building and saving animated GIFs from a sequence of images.

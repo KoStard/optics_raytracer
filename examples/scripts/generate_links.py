@@ -13,6 +13,7 @@ SCENARIOS_DIR = "examples/scenarios"
 GITHUB_BASE_URL = "https://github.com/KoStard/optics_raytracer/blob/master"
 VIEWER_BASE_URL = "https://3dviewer.net/#model="
 
+
 def get_model_files(scenario_dir: str) -> List[str]:
     """Get all OBJ and MTL files in the scenario directory with their relative paths."""
     model_files = []
@@ -26,21 +27,29 @@ def get_model_files(scenario_dir: str) -> List[str]:
 
     return model_files
 
+
 def build_github_url(file_path: str) -> str:
     """Build a GitHub URL for a file."""
     return f"{GITHUB_BASE_URL}/{file_path}"
 
+
 def build_viewer_url(github_urls: List[str]) -> str:
     """Build a 3D viewer URL from GitHub URLs."""
     return f"{VIEWER_BASE_URL}{','.join(github_urls)}"
+
 
 def process_scenarios() -> Dict[str, Dict]:
     """Process all scenarios and build URLs."""
     results = {}
 
     # Get all scenario directories
-    scenario_dirs = sorted([d for d in os.listdir(SCENARIOS_DIR)
-                     if os.path.isdir(os.path.join(SCENARIOS_DIR, d))])
+    scenario_dirs = sorted(
+        [
+            d
+            for d in os.listdir(SCENARIOS_DIR)
+            if os.path.isdir(os.path.join(SCENARIOS_DIR, d))
+        ]
+    )
 
     for scenario_dir in scenario_dirs:
         model_files = get_model_files(scenario_dir)
@@ -54,10 +63,11 @@ def process_scenarios() -> Dict[str, Dict]:
         results[scenario_dir] = {
             "model_files": model_files,
             "github_urls": github_urls,
-            "viewer_url": viewer_url
+            "viewer_url": viewer_url,
         }
 
     return results
+
 
 def main():
     """Main function to process scenarios and print results."""
@@ -75,6 +85,7 @@ def main():
         for i, (file, url) in enumerate(zip(data["model_files"], data["github_urls"])):
             print(f"{i+1}. [{os.path.basename(file)}]({url})")
         print()
+
 
 if __name__ == "__main__":
     main()

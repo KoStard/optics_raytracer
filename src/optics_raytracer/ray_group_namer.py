@@ -32,12 +32,12 @@ class RayGroupNamer:
     def get_ray_group_name(depth=None, hit_object_type=None, hit_object_index=None):
         """
         Get a consistent group name for rays based on their characteristics.
-        
+
         Args:
             depth: The interaction depth (refraction count) of the ray
             hit_object_type: Type of object hit ("lens" or "object")
             hit_object_index: Index of the hit object
-            
+
         Returns:
             A descriptive and consistent group name string
         """
@@ -47,7 +47,7 @@ class RayGroupNamer:
         else:
             ordinal = RayGroupNamer.get_ordinal(depth)
             prefix = f"{ordinal}_refraction"
-        
+
         # Add object information
         if hit_object_type == "lens" and hit_object_index is not None:
             return f"{prefix}_through_lens_{hit_object_index}"
@@ -60,11 +60,11 @@ class RayGroupNamer:
     def get_hit_point_group_name(hit_object_type=None, hit_object_index=None):
         """
         Get a consistent group name for hit points based on their characteristics.
-        
+
         Args:
             hit_object_type: Type of object hit ("lens" or "object")
             hit_object_index: Index of the hit object
-            
+
         Returns:
             A descriptive and consistent group name string
         """
