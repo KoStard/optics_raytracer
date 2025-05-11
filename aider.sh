@@ -14,6 +14,9 @@ cmd="aider"
 for file in "${read_only_files[@]}"; do
   cmd+=" --read \"$file\""
 done
+
+cmd+=" --read README.md"
+
 # cmd+=" --file \"$editable_file\""
 
 # Execute the command
