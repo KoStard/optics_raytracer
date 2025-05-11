@@ -14,10 +14,14 @@ A 3D optics raytracer for simulating thin lenses and image projection, with OBJ 
 ![Optics Simulation](https://github.com/user-attachments/assets/ea337d37-45da-4bc2-a82c-38d84c8d583a)
 
 3D Examples:
-- [Demo with Eye-like camera with focal distance](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/eye_like_camera/test_with_eye.obj,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/eye_like_camera/test_with_eye.mtl)
-- [Simple Telescope](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/telescope/telescope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/telescope/telescope_scene.obj)
-- [Simple Microscope](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/microscope/microscope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/microscope/microscope_scene.obj)
+- [telescope_scene](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/astronomical_telescope/telescope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/astronomical_telescope/telescope_scene.obj)
+- [compound_microscope_scene](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/compound_microscope/compound_microscope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/compound_microscope/compound_microscope_scene.obj)
+- [test_with_eye](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/eye_like_camera/test_with_eye.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/eye_like_camera/test_with_eye.obj)
+- [microscope_scene](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/microscope/microscope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/microscope/microscope_scene.obj)
+- [prismatic_effect_scene](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/prismatic_effect/prismatic_effect_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/prismatic_effect/prismatic_effect_scene.obj)
+- [telescope_scene](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/telescope/telescope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/telescope/telescope_scene.obj)
 
+![lens_comparison](https://github.com/user-attachments/assets/dd0346bd-d602-4f47-b9b0-bf974147b808) ![moving_lens](https://github.com/user-attachments/assets/e56c2415-84a1-4687-a9a3-fc2c78a55d88)
 
 ## Installation
 
