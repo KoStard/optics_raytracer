@@ -84,7 +84,7 @@ class Exporter3D:
         rays_color = (1, 0, 0, 0.1)  # red, opaque
         materials = {
             "rays": rays_color,
-            "rays/missed": rays_color,
+            "rays/missed": (0.1, 0.1, 0.1, 0.1),
             "rays/1_depth": rays_color,
             "rays/2_depth": rays_color,
             "rays/3_depth": rays_color,

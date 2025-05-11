@@ -220,7 +220,7 @@ class ColorTracer:
             self.exporter.add_line(ray["origin"], point, group=rays_group)
             self.exporter.add_point(point, group="hits")
 
-    def _save_missed_rays(self, rays, max_length=1000):
+    def _save_missed_rays(self, rays, missed_rays_length=5):
         """
         Save visualization of rays that missed all objects.
 
@@ -231,7 +231,7 @@ class ColorTracer:
         # Save visualization of hit rays
         tracing_mask = self._get_random_tracing_mask(len(rays))
         for ray in rays[tracing_mask]:
-            end_point = ray["origin"] + ray["direction"] * max_length
+            end_point = ray["origin"] + ray["direction"] * missed_rays_length
             self.exporter.add_line(ray["origin"], end_point, group="rays/missed")
 
     def _get_random_tracing_mask(self, l):

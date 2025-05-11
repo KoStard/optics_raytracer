@@ -3,7 +3,7 @@ Kd 1 0 0
 d 0.1
 
 newmtl rays/missed
-Kd 1 0 0
+Kd 0.1 0.1 0.1
 d 0.1
 
 newmtl rays/1_depth
