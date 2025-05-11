@@ -1,6 +1,7 @@
 import numpy as np
 import math
 
+
 class Exporter3D:
     def __init__(self):
         self.vertices = np.empty((0, 3), dtype=np.float32)
@@ -24,9 +25,9 @@ class Exporter3D:
 
     def add_circle(self, circle: np.ndarray, resolution=50):
         """Add a circle using circle_dtype"""
-        normal = circle['normal']
-        center = circle['center']
-        radius = circle['radius']
+        normal = circle["normal"]
+        center = circle["center"]
+        radius = circle["radius"]
 
         # Find orthogonal basis vectors
         if abs(normal[0]) < 0.9:
@@ -40,9 +41,9 @@ class Exporter3D:
         # Generate circle points
         angles = np.linspace(0, 2 * math.pi, resolution)
         points = (
-            center[np.newaxis, :] +
-            radius * np.cos(angles)[:, np.newaxis] * tangent[np.newaxis, :] +
-            radius * np.sin(angles)[:, np.newaxis] * binormal[np.newaxis, :]
+            center[np.newaxis, :]
+            + radius * np.cos(angles)[:, np.newaxis] * tangent[np.newaxis, :]
+            + radius * np.sin(angles)[:, np.newaxis] * binormal[np.newaxis, :]
         )
 
         # Add lines for the circle
@@ -56,17 +57,17 @@ class Exporter3D:
 
     def add_rectangle(self, rectangle: np.ndarray):
         """Add a rectangle using rectangle_dtype"""
-        center = rectangle['middle_point']
-        u = rectangle['u_vector']
-        v = np.cross(rectangle['normal'], u)
-        width = rectangle['width']
-        height = rectangle['height']
+        center = rectangle["middle_point"]
+        u = rectangle["u_vector"]
+        v = np.cross(rectangle["normal"], u)
+        width = rectangle["width"]
+        height = rectangle["height"]
 
         # Calculate corner points
-        p1 = center - u*(width/2) - v*(height/2)
-        p2 = center + u*(width/2) - v*(height/2)
-        p3 = center + u*(width/2) + v*(height/2)
-        p4 = center - u*(width/2) + v*(height/2)
+        p1 = center - u * (width / 2) - v * (height / 2)
+        p2 = center + u * (width / 2) - v * (height / 2)
+        p3 = center + u * (width / 2) + v * (height / 2)
+        p4 = center - u * (width / 2) + v * (height / 2)
 
         # Add edges
         for start, end in [(p1, p2), (p2, p3), (p3, p4), (p4, p1)]:
@@ -80,7 +81,7 @@ class Exporter3D:
 
     def save_to_obj(self, output_path: str, output_mtl_path: str):
         # Define materials with colors and transparency
-        rays_color = (1, 0, 0, 0.1)         # red, opaque
+        rays_color = (1, 0, 0, 0.1)  # red, opaque
         materials = {
             "rays": rays_color,
             "rays/missed": rays_color,
@@ -93,9 +94,9 @@ class Exporter3D:
             "rays/7_depth": rays_color,
             "rays/8_depth": rays_color,
             "rays/9_depth": rays_color,
-            "circles": (0, 0, 1, 0.5),      # blue, semi-transparent
-            "rectangles": (0, 1, 0, 0.5),   # green, semi-transparent
-            "hits": (0, 0, 0, 1)            # black, opaque
+            "circles": (0, 0, 1, 0.5),  # blue, semi-transparent
+            "rectangles": (0, 1, 0, 0.5),  # green, semi-transparent
+            "hits": (0, 0, 0, 1),  # black, opaque
         }
 
         # Create MTL file
@@ -108,7 +109,7 @@ class Exporter3D:
 
         with open(output_path, "w") as f:
             # Reference the material library
-            mtl_filename = output_mtl_path.split('/')[-1]
+            mtl_filename = output_mtl_path.split("/")[-1]
             f.write(f"mtllib {mtl_filename}\n\n")
 
             # Write vertices

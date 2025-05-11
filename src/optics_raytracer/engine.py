@@ -1,5 +1,4 @@
 from typing import List
-import numpy as np
 from .camera import Camera
 from .colored_object import ColoredObject
 from .lens import Lens
@@ -7,17 +6,19 @@ from .color_tracer import ColorTracer
 from .export_3d import Exporter3D
 from .image_saver import ImageSaver
 
+
 class OpticsRayTracingEngine:
     """
     Main engine for ray tracing optical systems.
     Handles scene setup, rendering, and output generation.
     """
+
     def __init__(
         self,
         camera: Camera,
         objects: List[ColoredObject],
         lenses: List[Lens],
-        ray_sampling_rate_for_3d_export: float = 0.01
+        ray_sampling_rate_for_3d_export: float = 0.01,
     ):
         """
         Initialize the ray tracing engine.
@@ -34,7 +35,12 @@ class OpticsRayTracingEngine:
         self.ray_sampling_rate = ray_sampling_rate_for_3d_export
         self.exporter = Exporter3D()
 
-    def render(self, output_image_path: str = None, output_3d_path: str = None, output_mtl_path: str = None):
+    def render(
+        self,
+        output_image_path: str = None,
+        output_3d_path: str = None,
+        output_mtl_path: str = None,
+    ):
         """
         Render the scene and optionally save outputs.
 
@@ -47,7 +53,7 @@ class OpticsRayTracingEngine:
             self.exporter,
             self.objects,
             self.lenses,
-            ray_sampling_rate_for_3d_export=self.ray_sampling_rate
+            ray_sampling_rate_for_3d_export=self.ray_sampling_rate,
         )
 
         # Get rays from camera
@@ -61,7 +67,9 @@ class OpticsRayTracingEngine:
         colors = color_tracer.get_colors(rays)
         pixel_colors = self.camera.convert_ray_colors_to_pixel_colors(colors)
         pixel_colors *= 255.999  # Convert to 8-bit RGB values
-        image_saver.write_pixels(pixel_colors.reshape(image_size.height, image_size.width, 3))
+        image_saver.write_pixels(
+            pixel_colors.reshape(image_size.height, image_size.width, 3)
+        )
 
         # Save outputs if requested
         if output_image_path:

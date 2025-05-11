@@ -13,14 +13,14 @@ if True:
     camera = EyeCamera.build(
         viewport_center=np.array([0, 0, 0], dtype=np.float32),
         lens_distance=0.24,
-        lens_radius=.01,
+        lens_radius=0.01,
         number_of_circles=2,
         rays_per_circle=5,
-        viewport_size=FloatSize(.35, .35),
+        viewport_size=FloatSize(0.35, 0.35),
         image_size=IntegerSize(400, 400),
         viewport_u_vector=np.array([1, 0, 0], dtype=np.float32),
         viewport_normal=np.array([0, 0, -1], dtype=np.float32),
-        lens_focal_distance=lens_focal_distance
+        lens_focal_distance=lens_focal_distance,
     )
 
     # BUG: normal impacting focal distance - lens are same from both sides
@@ -29,7 +29,7 @@ if True:
         center=np.array([5, 0, -10], dtype=np.float32),
         radius=5.0,
         normal=np.array([0, 0, -1], dtype=np.float32),
-        focal_distance=2.0
+        focal_distance=2.0,
     )
 
     # Create an image from image.png
@@ -45,7 +45,7 @@ if True:
         height=50.0,
         middle_point=np.array([0, 0, -50], dtype=np.float32),
         normal=np.array([0, 0, -1], dtype=np.float32),
-        u_vector=np.array([1, 0, 0], dtype=np.float32)
+        u_vector=np.array([1, 0, 0], dtype=np.float32),
     )
     apple = InsertedImage(
         image_path="examples/assets/apple.png",
@@ -53,7 +53,7 @@ if True:
         height=0.3,
         middle_point=np.array([0.2, 0, -0.6], dtype=np.float32),
         normal=np.array([0, 0, -1], dtype=np.float32),
-        u_vector=np.array([1, 0, 0], dtype=np.float32)
+        u_vector=np.array([1, 0, 0], dtype=np.float32),
     )
 
     # Create ray tracing engine
@@ -62,8 +62,8 @@ if True:
         objects=[image, apple],
         lenses=[
             # lens
-            ],
-        ray_sampling_rate_for_3d_export=0.01
+        ],
+        ray_sampling_rate_for_3d_export=0.01,
     )
 
     # Render the scene
