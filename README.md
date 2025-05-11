@@ -116,9 +116,9 @@ optics-raytracer examples/telescope.json
 optics-raytracer examples/microscope.json
 ```
 Some ready examples to check:
-- [Simple Demo With Convex and Concave Lenses](https://3dviewer.net/index.html#model=https://raw.githubusercontent.com/KoStard/optics_raytracer/refs/heads/master/examples/scene.obj)
-- [Simple Telescope](https://3dviewer.net/#model=https://raw.githubusercontent.com/KoStard/optics_raytracer/refs/heads/master/examples/telescope_scene.obj)
-- [Simple Microscope](https://3dviewer.net/#model=https://raw.githubusercontent.com/KoStard/optics_raytracer/refs/heads/master/examples/microscope_scene.obj)
+- [Demo with Eye-like camera with focal distance](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/eye_like_camera/test_with_eye.obj,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/eye_like_camera/test_with_eye.mtl)
+- [Simple Telescope](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/telescope/telescope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/telescope/telescope_scene.obj)
+- [Simple Microscope](https://3dviewer.net/#model=https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/microscope/microscope_scene.mtl,https://github.com/KoStard/optics_raytracer/blob/master/examples/scenarios/microscope/microscope_scene.obj)
 
 Notice that not all rays and hits are rendered in the OBJ to keep the file light. The rendered ones are chosen randomly.
 
