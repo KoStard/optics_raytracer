@@ -174,10 +174,7 @@ optics-raytracer examples/microscope.json
 
 ```python
 import numpy as np
-from optics_raytracer.camera import SimpleCamera, FloatSize, IntegerSize
-from optics_raytracer.lens import Lens
-from optics_raytracer.inserted_image import InsertedImage
-from optics_raytracer.engine import OpticsRayTracingEngine
+from optics_raytracer import SimpleCamera, FloatSize, IntegerSize, Lens, InsertedImage, OpticsRayTracingEngine
 
 # Create camera
 camera = SimpleCamera.build(
@@ -228,7 +225,7 @@ print("Rendering complete. Check examples/output.png for the result.")
 ### 3. Dictionary Configuration from Python
 
 ```python
-from optics_raytracer.cli import parse_config
+from optics_raytracer import parse_config
 
 # Define the scene using a dictionary (similar to JSON structure
 config = {

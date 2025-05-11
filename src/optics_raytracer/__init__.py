@@ -17,7 +17,7 @@ from optics_raytracer.camera.camera import (
     EyeCamera,
     eye_camera_viewport_dtype,
 )
-from optics_raytracer.cli import main
+from optics_raytracer.cli import main, parse_config
 from optics_raytracer.rendering.color_tracer import ColorTracer
 from optics_raytracer.optics.colored_object import ColoredObject
 from optics_raytracer.rendering.engine import OpticsRayTracingEngine
@@ -55,6 +55,7 @@ __all__ = [
     "SimpleCamera",
     "EyeCamera",
     "main",
+    "parse_config",
     "ColorTracer",
     "ColoredObject",
     "OpticsRayTracingEngine",
