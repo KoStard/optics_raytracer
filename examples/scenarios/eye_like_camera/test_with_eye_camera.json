@@ -1,0 +1,40 @@
+{
+  "camera": {
+    "type": "eye",
+    "center": [0, 0, 0],
+    "lens_distance": 0.24,
+    "lens_radius": 0.01,
+    "lens_focal_distance": 0.24,
+    "number_of_circles": 2,
+    "rays_per_circle": 5,
+    "viewport_width": 0.35,
+    "image_size": [400, 400],
+    "u_vector": [1, 0, 0],
+    "viewport_normal": [0, 0, -1]
+  },
+  "objects": [
+    {
+      "type": "image",
+      "image_path": "examples/assets/image.png",
+      "width": 50.0,
+      "height": 50.0,
+      "center": [0, 0, -50],
+      "normal": [0, 0, -1],
+      "u_vector": [1, 0, 0]
+    },
+    {
+      "type": "image",
+      "image_path": "examples/assets/apple.png",
+      "width": 0.3,
+      "height": 0.3,
+      "center": [0.2, 0, -0.6],
+      "normal": [0, 0, -1],
+      "u_vector": [1, 0, 0]
+    }
+  ],
+  "output": {
+    "image_path": "examples/scenarios/eye_like_camera/test_with_eye.png",
+    "obj_path": "examples/scenarios/eye_like_camera/test_with_eye.obj"
+  },
+  "ray_sampling_rate": 0.01
+}
