@@ -1,69 +1,69 @@
+"""
+Negative Lens Experiment: Visualize how a negative lens affects light rays.
+
+This experiment places a negative lens at a fixed distance of 4dm from the camera
+and renders the scene with a target image at 50dm (5m) distance. The simulation 
+demonstrates how a negative lens causes light rays to diverge.
+
+Output files:
+- experiments/close_negative.png: Rendered image
+- experiments/close_negative.obj/.mtl: 3D scene visualization
+"""
+
 import numpy as np
 from optics_raytracer.camera import EyeCamera, FloatSize, IntegerSize
 from optics_raytracer.lens import Lens
 from optics_raytracer.inserted_image import InsertedImage
 from optics_raytracer.engine import OpticsRayTracingEngine
 
-# Setup parameters - eye lens focal distance in decimeters
-lens_focal_distance = 0.24
+# Configuration constants (all distances in decimeters)
+EYE_LENS_FOCAL_DISTANCE = 0.24
+EYE_LENS_DISTANCE = 0.24
+EYE_LENS_RADIUS = 0.01
+IMAGE_DISTANCE = 50.0  # 5m 
+LENS_DISTANCE = 4.0    # 4dm
+LENS_RADIUS = 4.0
+LENS_FOCAL_DISTANCE = -10.0  # Negative focal distance
 
-print(f"Starting lens comparison experiment (frame {0+1}/10)...")
-print(f"Using eye lens with focal distance: {lens_focal_distance} dm")
+print("Starting negative lens experiment...")
 
 # Create eye camera at origin (0,0,0) simulating human eye
 camera = EyeCamera.build(
     viewport_center=np.array([0, 0, 0], dtype=np.float32),
-    lens_distance=0.24,  # 0.24dm lens distance
-    lens_radius=0.01,
+    lens_distance=EYE_LENS_DISTANCE,
+    lens_radius=EYE_LENS_RADIUS,
     number_of_circles=2,
     rays_per_circle=5,
     viewport_size=FloatSize(0.35, 0.35),
-    image_size=IntegerSize(200, 200),  # Higher resolution for better detail
+    image_size=IntegerSize(200, 200),
     viewport_u_vector=np.array([1, 0, 0], dtype=np.float32),
     viewport_normal=np.array([0, 0, -1], dtype=np.float32),
-    lens_focal_distance=lens_focal_distance,
+    lens_focal_distance=EYE_LENS_FOCAL_DISTANCE,
 )
 
-# camera = SimpleCamera.build(
-#     camera_center=np.array([0, 0, 0], dtype=np.float32),
-#     focal_distance=0.24,  # 0.24dm lens distance
-#     viewport_size=FloatSize(.35, .35),
-#     image_size=IntegerSize(200, 200),  # Higher resolution for better detail
-#     viewport_u_vector=np.array([1, 0, 0], dtype=np.float32),
-#     viewport_normal=np.array([0, 0, -1], dtype=np.float32)
-# )
-
-print("Camera setup complete.")
-print(f"Setting up test lenses at {(1)*4}dm distance...")
-
-# Create two test lenses at varying distances (moving farther with each frame)
-# First lens with positive focal distance (converging lens)
+# Create a negative lens
 lens = Lens.build(
-    center=np.array([0, 0, -((1) * 4)], dtype=np.float32),  # 2.5m away
-    radius=4.0,
+    center=np.array([0, 0, -LENS_DISTANCE], dtype=np.float32),
+    radius=LENS_RADIUS,
     normal=np.array([0, 0, -1], dtype=np.float32),
-    focal_distance=-10.0,  # 1m positive focal distance
+    focal_distance=LENS_FOCAL_DISTANCE,
 )
 
-print(
-    f"Lenses created: positive lens (f=10dm) and negative lens (f=-10dm) at {(0+1)*4}dm"
-)
-print("Setting up test image at 50dm (5m) distance...")
-
-# Create an image at 5m (50dm)
+# Create a target image
 distant_image = InsertedImage(
-    image_path="target.png",
+    image_path="experiments/assets/target.png",
     width=50.0,
     height=50.0,
-    middle_point=np.array([0, 0, -50], dtype=np.float32),  # 5m away
+    middle_point=np.array([0, 0, -IMAGE_DISTANCE], dtype=np.float32),
     normal=np.array([0, 0, -1], dtype=np.float32),
     u_vector=np.array([1, 0, 0], dtype=np.float32),
 )
 
-print("Test image loaded successfully.")
-print("Initializing ray tracing engine...")
+print(f"Setup complete: Eye lens (f={EYE_LENS_FOCAL_DISTANCE}dm), " 
+      f"Negative lens (f={LENS_FOCAL_DISTANCE}dm) at {LENS_DISTANCE}dm, "
+      f"Target image at {IMAGE_DISTANCE}dm")
 
-# Create ray tracing engine
+# Create ray tracing engine and render
 engine = OpticsRayTracingEngine(
     camera=camera,
     objects=[distant_image],
@@ -71,10 +71,10 @@ engine = OpticsRayTracingEngine(
     ray_sampling_rate_for_3d_export=0.01,
 )
 
-print("Ray tracing engine initialized with camera, lenses, and image.")
-print("Starting rendering process...")
-
-# Render the scene and save individual frame OBJ files
+print("Rendering scene...")
 image = engine.render(
-    output_3d_path="close_negative.obj", output_image_path="close_negative.png"
+    output_3d_path="experiments/close_negative.obj",
+    output_mtl_path="experiments/close_negative.mtl",
+    output_image_path="experiments/close_negative.png"
 )
+print("Rendering complete! Output saved to experiments/close_negative.png")
