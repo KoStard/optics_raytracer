@@ -120,7 +120,6 @@ class Exporter3D:
         # We don't know how many there will be, so we'll create materials for a reasonable number
         for hit_object_index in range(20):
             # Lens ray materials
-            # Use the RayGroupNamer to generate consistent group names
 
             lens_color = generate_color(hit_object_index, "lens")
             materials[

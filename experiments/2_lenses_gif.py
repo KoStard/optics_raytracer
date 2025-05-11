@@ -59,8 +59,7 @@ for i in range(iterations):
 
     # Create an image at 5m (50dm)
     distant_image = InsertedImage(
-        image_path="target.png",
-        # image_path="examples/image.png",
+        image_path="experiments/assets/target.png",
         width=50.0,
         height=50.0,
         middle_point=np.array([0, 0, -50], dtype=np.float32),  # 5m away

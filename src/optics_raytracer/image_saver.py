@@ -11,8 +11,8 @@ class ImageSaver:
 
     def write_pixels(self, pixel_colors: np.ndarray):
         self.pixels = pixel_colors.astype("uint8")
+        self.image = Image.fromarray(self.pixels, mode="RGB")
 
     def save(self, filename: str):
         # Save image with format determined by extension
-        self.image = Image.fromarray(self.pixels, mode="RGB")
         self.image.save(filename)

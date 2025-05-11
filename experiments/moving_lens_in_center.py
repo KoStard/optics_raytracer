@@ -53,7 +53,7 @@ for i in range(10):
 
     # Create an image at 5m (50dm)
     distant_image = InsertedImage(
-        image_path="target.png",
+        image_path="experiments/assets/target.png",
         width=50.0,
         height=50.0,
         middle_point=np.array([0, 0, -50], dtype=np.float32),  # 5m away
@@ -76,7 +76,9 @@ for i in range(10):
     print("Starting rendering process...")
 
     # Render the scene and save individual frame OBJ files
-    image = engine.render(output_3d_path=f"{frames_dir}/frame_{i+1:02d}.obj")
+    image = engine.render(
+        # output_3d_path=f"{frames_dir}/frame_{i+1:02d}.obj", output_mtl_path=f"{frames_dir}/frame_{i+1:02d}.mtl"
+    )
     gif_builder.add_image(image)
 
     print(f"Rendering frame {i+1}/10 complete!")

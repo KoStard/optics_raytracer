@@ -28,14 +28,6 @@ def create_target_image(
     # Find the center
     center = (size // 2, size // 2)
 
-    # Draw the vertical and horizontal lines (the + sign)
-    draw.line(
-        [(center[0], 0), (center[0], size)], fill="black", width=line_thickness
-    )  # Vertical
-    draw.line(
-        [(0, center[1]), (size, center[1])], fill="black", width=line_thickness
-    )  # Horizontal
-
     # Draw concentric circles with different colors
     max_radius = int(np.sqrt(2) * size / 2)  # Maximum possible radius to reach corners
     radius = step
@@ -56,9 +48,17 @@ def create_target_image(
                 (center[0] + radius, center[1] + radius),
             ],
             outline=color,
-            width=circle_thickness,
+            width=circle_thickness + 1,
         )
         radius += step
+
+    # Draw the vertical and horizontal lines (the + sign)
+    draw.line(
+        [(center[0], 0), (center[0], size)], fill="black", width=line_thickness
+    )  # Vertical
+    draw.line(
+        [(0, center[1]), (size, center[1])], fill="black", width=line_thickness
+    )  # Horizontal
 
     # Save the image
     image.save(output_path)
@@ -66,4 +66,4 @@ def create_target_image(
 
 
 if __name__ == "__main__":
-    create_target_image()
+    create_target_image(output_path="experiments/assets/target.png")
