@@ -1,0 +1,46 @@
+{
+  "camera": {
+    "center": [0, 0, 0],
+    "focal_distance": 0.02,
+    "viewport_width": 0.04,
+    "image_size": [800, 400],
+    "u_vector": [1, 0, 0],
+    "viewport_normal": [0, 0, -1]
+  },
+  "objects": [
+    {
+      "type": "lens",
+      "center": [0, 0, -0.05],
+      "radius": 0.015,
+      "normal": [0, 0, -1],
+      "focal_distance": 0.025
+    },
+    {
+      "type": "lens",
+      "center": [0, 0, -0.15],
+      "radius": 0.03,
+      "normal": [0, 0, -1],
+      "focal_distance": 0.08
+    },
+    {
+      "type": "lens",
+      "center": [0, 0, -0.3],
+      "radius": 0.04,
+      "normal": [0, 0, -1],
+      "focal_distance": 0.1
+    },
+    {
+      "type": "image",
+      "center": [0, 0, -0.4],
+      "width": 0.05,
+      "u_vector": [1, 0, 0],
+      "normal": [0, 0, -1],
+      "image_path": "examples/assets/image.png"
+    }
+  ],
+  "output": {
+    "image_path": "examples/scenarios/compound_microscope/compound_microscope_view.png",
+    "obj_path": "examples/scenarios/compound_microscope/compound_microscope_scene.obj"
+  },
+  "compare_with_without_lenses": true
+}
