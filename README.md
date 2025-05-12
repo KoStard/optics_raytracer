@@ -70,7 +70,7 @@ Create a config.json file:
         "lens_radius": 0.5,           # Radius of the lens
         "lens_focal_distance": 0.24,  # Focal distance of the lens
         "number_of_circles": 2,       # Number of concentric sampling circles on lens (optional, default: 2)
-        "rays_per_circle": 5,         # Rays per sampling circle (optional, default: 5)
+        "rays_per_circle": 3,         # Rays per sampling circle (optional, default: 5)
         "viewport_width": 2.0,        # Width of viewport in world units
         "image_size": [w, h],         # Output image resolution in pixels
         "u_vector": [x, y, z],        # Right direction vector (typically [1,0,0])
@@ -125,11 +125,14 @@ Create a config.json file:
 ##### Eye-like Camera
 - **type**: Camera type, set to "eye" for eye-like camera with lens
 - **center**: The 3D position of the viewport in world coordinates (x,y,z)
-- **lens_distance**: Distance from viewport to lens
+- **lens_distance**: Distance from viewport to lens (in decimeters)
 - **lens_radius**: Physical radius of the lens
-- **lens_focal_distance**: Focal distance of the lens
+- **lens_focal_distance**: Focal distance of the lens (in decimeters)
+- **object_distance**: Alternative to lens_focal_distance - Distance to the object that should be in focus (in decimeters)
 - **number_of_circles**: Number of concentric sampling circles on lens (optional, default: 2) 
 - **rays_per_circle**: Number of rays per sampling circle (optional, default: 5)
+
+  Note: For eye-like camera, provide either `lens_focal_distance` OR `object_distance`, not both. To focus at infinity, use `lens_focal_distance` equal to `lens_distance`.
 - **viewport_width**: Width of viewport in world units (height calculated based on aspect ratio)
 - **image_size**: Resolution of output image in pixels [width, height]
 - **u_vector**: Right direction vector of the camera (typically [1,0,0])

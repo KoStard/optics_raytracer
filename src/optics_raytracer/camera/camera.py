@@ -191,7 +191,7 @@ class EyeCamera(Camera):
 
         Args:
             viewport_center: Center point of the viewport
-            lens_distance: Distance from viewport to lens
+            lens_distance: Distance from viewport to lens (in decimeters)
             lens_radius: Radius of the lens
             number_of_circles: Number of concentric circles on lens
             rays_per_circle: Number of rays per circle
@@ -199,6 +199,7 @@ class EyeCamera(Camera):
             image_size: Size of the output image
             viewport_u_vector: U vector defining the viewport's horizontal axis
             viewport_normal: Normal vector of the viewport plane
+            lens_focal_distance: Focal distance of the lens (in decimeters)
 
         Returns:
             New EyeCamera instance
@@ -230,6 +231,59 @@ class EyeCamera(Camera):
         )
 
         return EyeCamera(camera_array, lens)
+    
+    @staticmethod
+    def build_from_focus_distance(
+        viewport_center: np.ndarray,
+        lens_distance: float,
+        lens_radius: float,
+        object_distance: float,
+        number_of_circles: int,
+        rays_per_circle: int,
+        viewport_size: FloatSize,
+        image_size: IntegerSize,
+        viewport_u_vector: np.ndarray,
+        viewport_normal: np.ndarray,
+    ) -> "EyeCamera":
+        """
+        Create a new EyeCamera instance based on the object distance that should be in focus.
+
+        Args:
+            viewport_center: Center point of the viewport
+            lens_distance: Distance from viewport to lens (in decimeters)
+            lens_radius: Radius of the lens
+            object_distance: Distance to the object that should be in focus (in decimeters)
+            number_of_circles: Number of concentric circles on lens
+            rays_per_circle: Number of rays per circle
+            viewport_size: Size of the viewport
+            image_size: Size of the output image
+            viewport_u_vector: U vector defining the viewport's horizontal axis
+            viewport_normal: Normal vector of the viewport plane
+
+        Returns:
+            New EyeCamera instance
+        
+        Note:
+            Uses the lens formula: 1/f = 1/di + 1/do
+            Where di is the lens_distance (retina) and do is the object_distance.
+            To focus at infinity, use the build() method with lens_focal_distance equal to lens_distance.
+        """
+        # Calculate focal distance using the lens formula: 1/f = 1/di + 1/do
+        # where di is lens_distance and do is object_distance
+        lens_focal_distance = (lens_distance * object_distance) / (lens_distance + object_distance)
+        
+        return EyeCamera.build(
+            viewport_center=viewport_center,
+            lens_distance=lens_distance,
+            lens_radius=lens_radius,
+            number_of_circles=number_of_circles,
+            rays_per_circle=rays_per_circle,
+            viewport_size=viewport_size,
+            image_size=image_size,
+            viewport_u_vector=viewport_u_vector,
+            viewport_normal=viewport_normal,
+            lens_focal_distance=lens_focal_distance,
+        )
 
     @property
     def viewport_center(self) -> np.ndarray:
