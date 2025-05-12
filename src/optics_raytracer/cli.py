@@ -50,14 +50,26 @@ def parse_config(config: Dict[str, Any]) -> OpticsRayTracingEngine:
     lenses = []
     for obj in config["objects"]:
         if obj["type"] == "lens":
-            lenses.append(
-                Lens.build(
-                    center=np.array(obj["center"], dtype=np.float32),
-                    radius=obj["radius"],
-                    normal=np.array(obj["normal"], dtype=np.float32),
-                    focal_distance=obj["focal_distance"],
+            if "magnification" in obj:
+                # Use magnification to create the lens
+                lenses.append(
+                    Lens.build_from_magnification(
+                        center=np.array(obj["center"], dtype=np.float32),
+                        radius=obj["radius"],
+                        normal=np.array(obj["normal"], dtype=np.float32),
+                        magnification=obj["magnification"],
+                    )
                 )
-            )
+            else:
+                # Use focal distance
+                lenses.append(
+                    Lens.build(
+                        center=np.array(obj["center"], dtype=np.float32),
+                        radius=obj["radius"],
+                        normal=np.array(obj["normal"], dtype=np.float32),
+                        focal_distance=obj["focal_distance"],
+                    )
+                )
         elif obj["type"] == "image":
             image_path = Path(obj["image_path"])
             if not image_path.exists():

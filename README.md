@@ -141,7 +141,10 @@ Create a config.json file:
   - **center**: 3D position of lens center
   - **radius**: Physical radius of lens
   - **normal**: Orientation of lens (normal vector)
-  - **focal_distance**: Focal length (positive for convex, negative for concave lenses)
+  - **focal_distance**: Focal length in decimeters (positive for convex, negative for concave lenses)
+  - **magnification**: Alternative to focal_distance - Magnifying power of the lens (M = 1 + 2.5/f, where f is focal length in decimeters)
+  
+  Note: For lenses, provide either `focal_distance` OR `magnification`, not both.
 - For images:
   - **image_path**: Path to source image file
   - **width**: Physical width of image in world units

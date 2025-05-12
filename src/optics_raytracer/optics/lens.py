@@ -44,12 +44,41 @@ class Lens:
             center: 3D center point of the lens
             radius: Radius of the lens
             normal: Normal vector of the lens surface
-            focal_distance: Focal distance of the lens
+            focal_distance: Focal distance of the lens (in decimeters)
 
         Returns:
             New Lens instance
         """
         normal = normal / np.linalg.norm(normal)  # Normalize
+        return Lens(
+            np.array((center, normal, radius, focal_distance), dtype=lens_dtype)
+        )
+        
+    @staticmethod
+    def build_from_magnification(
+        center: np.ndarray, radius: float, normal: np.ndarray, magnification: float
+    ) -> "Lens":
+        """
+        Create a new Lens instance using magnification power.
+
+        Args:
+            center: 3D center point of the lens
+            radius: Radius of the lens
+            normal: Normal vector of the lens surface
+            magnification: Magnifying power of the lens (M = 1 + 2.5/f, where f is focal distance in decimeters)
+
+        Returns:
+            New Lens instance
+        """
+        normal = normal / np.linalg.norm(normal)  # Normalize
+        
+        # Convert magnification to focal distance using M = 1 + 2.5/f
+        # Therefore f = 2.5 / (M - 1)
+        if magnification == 1:
+            raise ValueError("Magnification cannot be exactly 1 (would require infinite focal length)")
+        
+        focal_distance = 2.5 / (magnification - 1)
+        
         return Lens(
             np.array((center, normal, radius, focal_distance), dtype=lens_dtype)
         )
